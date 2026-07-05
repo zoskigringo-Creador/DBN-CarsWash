@@ -28,6 +28,7 @@
 </head>
 <body class="h-screen flex flex-col">
 
+    <!-- Pantalla de Bienvenida -->
     <div id="splashScreen" class="fixed inset-0 bg-slate-900 z-[100] flex flex-col items-center justify-center smoke-out">
         <div class="flex items-center gap-4 text-white">
             <div class="bg-blue-600 text-white font-bold text-4xl p-4 rounded-lg leading-none">DB</div>
@@ -40,6 +41,7 @@
         </div>
     </div>
 
+    <!-- Pantalla de Inicio de Sesión -->
     <div id="loginView" class="fixed inset-0 z-[90] flex items-center justify-center bg-[#f4f7fb] bg-opacity-95 backdrop-blur-sm hidden">
         <div class="glass-panel p-6 md:p-8 w-full max-w-md mx-4 shadow-2xl">
             <div class="text-center mb-8">
@@ -56,7 +58,7 @@
                     <label class="block text-sm font-semibold text-slate-700 mb-1">Contraseña</label>
                     <input type="password" id="loginPass" class="w-full border border-slate-300 rounded-lg p-3 outline-none focus:border-blue-500 transition-colors" placeholder="••••••••">
                 </div>
-                <button onclick="intentarLogin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg mt-4 transition-colors shadow-md">
+                <button onclick="intentarLogin()" id="btnLogin" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg mt-4 transition-colors shadow-md">
                     INGRESAR AL SISTEMA
                 </button>
                 <div id="loginError" class="text-red-500 text-sm text-center hidden mt-2 font-medium bg-red-50 py-2 rounded">Credenciales incorrectas.</div>
@@ -64,6 +66,7 @@
         </div>
     </div>
 
+    <!-- Modal para ver Fotos -->
     <div id="photoModal" class="fixed inset-0 z-[80] bg-slate-900/95 backdrop-blur-sm hidden flex-col items-center justify-center p-4">
         <button onclick="cerrarFotoModal()" class="absolute top-4 right-4 bg-slate-800 hover:bg-red-500 text-white p-3 rounded-full transition-colors"><i class="ph ph-x text-2xl"></i></button>
         <div class="max-w-4xl w-full flex flex-col items-center modal-zoom">
@@ -77,6 +80,7 @@
         </div>
     </div>
 
+    <!-- Modal de Confirmación de Finalización -->
     <div id="confirmModal" class="fixed inset-0 z-[80] bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl modal-zoom">
             <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4"><i class="ph-fill ph-question"></i></div>
@@ -89,7 +93,9 @@
         </div>
     </div>
 
+    <!-- Aplicación Principal (Navbar y Contenido) -->
     <div id="mainApp" class="hidden flex-col h-full fade-in">
+        <!-- Header Superior -->
         <header class="bg-[#1e293b] text-white p-3 md:p-4 flex justify-between items-center shrink-0 z-30 shadow-md">
             <div class="flex items-center gap-3">
                 <div class="bg-blue-600 text-white font-bold text-xl px-2 py-1 rounded shadow">DB</div>
@@ -107,6 +113,7 @@
             </div>
         </header>
 
+        <!-- Pestañas de Navegación -->
         <div class="bg-white border-b border-slate-200 shadow-sm shrink-0">
             <div class="max-w-6xl mx-auto px-2 md:px-6">
                 <div class="flex overflow-x-auto hide-scrollbar gap-1 py-2" id="navTabs">
@@ -117,20 +124,29 @@
             </div>
         </div>
 
+        <!-- VISTA 1: NUEVO INGRESO -->
         <main id="vistaIngreso" class="flex-1 overflow-y-auto p-4 md:p-6 pb-32">
             <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Columna Izquierda: Datos del Vehículo -->
                 <div class="glass-panel p-6 relative overflow-hidden">
                     <div class="absolute top-0 left-0 w-full h-1 bg-blue-500"></div>
                     <div class="flex items-center gap-2 mb-6"><i class="ph-fill ph-car-profile text-2xl text-blue-500"></i><h2 class="text-lg font-bold text-[#1e293b] uppercase tracking-wide">Datos del Vehículo</h2></div>
+                    
                     <div class="mb-6">
                         <label class="flex justify-between items-end mb-2"><span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Evidencia Fotográfica *</span><span class="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded font-bold uppercase">Obligatorio</span></label>
-                        <label for="cameraInput" class="w-full h-40 border-2 border-dashed border-blue-300 rounded-xl flex flex-col justify-center items-center gap-2 cursor-pointer bg-blue-50/50 hover:bg-blue-50 transition-colors relative overflow-hidden group"><i class="ph-fill ph-camera-plus text-4xl text-blue-400 group-hover:scale-110 transition-transform"></i><span class="text-sm font-bold text-blue-600" id="fotoLabelText">Tocar para escanear vehículo</span><img id="photoPreview" class="absolute inset-0 w-full h-full object-cover hidden"></label>
+                        <label for="cameraInput" class="w-full h-40 border-2 border-dashed border-blue-300 rounded-xl flex flex-col justify-center items-center gap-2 cursor-pointer bg-blue-50/50 hover:bg-blue-50 transition-colors relative overflow-hidden group">
+                            <i class="ph-fill ph-camera-plus text-4xl text-blue-400 group-hover:scale-110 transition-transform"></i>
+                            <span class="text-sm font-bold text-blue-600" id="fotoLabelText">Tocar para escanear vehículo</span>
+                            <img id="photoPreview" class="absolute inset-0 w-full h-full object-cover hidden">
+                        </label>
                         <input type="file" id="cameraInput" accept="image/*" capture="environment" onchange="manejarFoto(event)">
                     </div>
+
                     <div class="mb-6">
                         <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Número de Chapa / Patente</label>
                         <input type="text" id="inputChapa" class="w-full bg-slate-50 border-2 border-slate-200 rounded-xl p-3 md:p-4 input-chapa outline-none focus:border-blue-500 focus:bg-white uppercase placeholder:text-slate-300 transition-colors" placeholder="EJ: AASD 123" oninput="validarFormulario()">
                     </div>
+
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Clasificación</label>
                         <div class="grid grid-cols-2 gap-3" id="tipoVehiculoGroup">
@@ -142,11 +158,15 @@
                     </div>
                 </div>
 
+                <!-- Columna Derecha: Servicios y Adicionales -->
                 <div class="flex flex-col gap-6">
                     <div class="glass-panel p-6 flex-1">
                         <div class="flex items-center gap-2 mb-6"><i class="ph-fill ph-drop text-2xl text-blue-500"></i><h2 class="text-lg font-bold text-[#1e293b] uppercase tracking-wide">Paquete de Lavado</h2></div>
-                        <div class="flex flex-col gap-3" id="serviciosGroup"><div class="text-center bg-slate-50 rounded-xl border border-slate-200 text-slate-400 py-10 text-sm font-medium"><i class="ph ph-arrow-left text-2xl block mb-2 opacity-50"></i>Seleccione la Clasificación primero</div></div>
+                        <div class="flex flex-col gap-3" id="serviciosGroup">
+                            <div class="text-center bg-slate-50 rounded-xl border border-slate-200 text-slate-400 py-10 text-sm font-medium"><i class="ph ph-arrow-left text-2xl block mb-2 opacity-50"></i>Seleccione la Clasificación primero</div>
+                        </div>
                     </div>
+
                     <div class="glass-panel p-6">
                          <div class="mb-4"><h2 class="text-sm font-bold text-slate-500 uppercase tracking-wide flex items-center gap-2"><i class="ph-fill ph-sparkle text-blue-500"></i> Adicionales Estéticos</h2></div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="adicionalesGroup"></div>
@@ -155,6 +175,7 @@
             </div>
         </main>
 
+        <!-- Barra Inferior Fija para Registrar -->
         <div id="barraRegistroInferior" class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-3 md:p-4 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.05)] z-20 transition-transform duration-300">
             <div class="max-w-6xl mx-auto flex flex-row justify-between items-center gap-4">
                 <div class="text-left flex-1"><p class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest">Total</p><p class="text-2xl sm:text-3xl font-extrabold text-blue-600 tracking-tight" id="totalDisplay">0 Gs</p></div>
@@ -162,6 +183,7 @@
             </div>
         </div>
 
+        <!-- VISTA 2: PISTA ACTIVA -->
         <main id="vistaPista" class="flex-1 overflow-y-auto p-4 md:p-6 hidden bg-slate-100">
             <div class="max-w-6xl mx-auto">
                 <div class="mb-6 flex items-center justify-between">
@@ -171,6 +193,7 @@
             </div>
         </main>
         
+        <!-- VISTA 3: AUDITORÍA (Solo Admin) -->
         <main id="vistaAuditoria" class="flex-1 overflow-y-auto p-4 md:p-6 hidden bg-slate-100">
             <div class="max-w-6xl mx-auto">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4">
@@ -178,7 +201,7 @@
                     <div class="flex gap-2 w-full md:w-auto">
                         <div class="flex-1 bg-white p-3 rounded-xl border border-slate-200 shadow-sm relative overflow-hidden">
                             <p class="text-[10px] text-slate-500 uppercase font-bold flex items-center gap-1"><i class="ph-fill ph-clock text-blue-500"></i> Ingreso Personal</p>
-                            <p class="text-sm font-bold text-slate-800" id="horaTurnoAuditoria">Cargando Nube...</p>
+                            <p class="text-sm font-bold text-slate-800" id="horaTurnoAuditoria">Turno no iniciado</p>
                         </div>
                         <div class="flex-1 bg-green-50 p-3 rounded-xl border border-green-200 shadow-sm">
                             <p class="text-[10px] text-green-600 uppercase font-bold">Total Recaudado Hoy</p>
@@ -186,10 +209,19 @@
                         </div>
                     </div>
                 </div>
+                
                 <div class="glass-panel overflow-hidden border border-slate-200">
                     <div class="overflow-x-auto">
                         <table class="w-full text-left border-collapse min-w-[800px]">
-                            <thead><tr class="bg-slate-50 border-b border-slate-200"><th class="p-4 text-xs font-bold text-slate-500 uppercase">Evidencia</th><th class="p-4 text-xs font-bold text-slate-500 uppercase">Vehículo</th><th class="p-4 text-xs font-bold text-slate-500 uppercase">Detalles</th><th class="p-4 text-xs font-bold text-slate-500 uppercase">Horarios</th><th class="p-4 text-xs font-bold text-slate-500 uppercase text-right">Cobrado</th></tr></thead>
+                            <thead>
+                                <tr class="bg-slate-50 border-b border-slate-200">
+                                    <th class="p-4 text-xs font-bold text-slate-500 uppercase">Evidencia</th>
+                                    <th class="p-4 text-xs font-bold text-slate-500 uppercase">Vehículo</th>
+                                    <th class="p-4 text-xs font-bold text-slate-500 uppercase">Detalles</th>
+                                    <th class="p-4 text-xs font-bold text-slate-500 uppercase">Horarios</th>
+                                    <th class="p-4 text-xs font-bold text-slate-500 uppercase text-right">Cobrado</th>
+                                </tr>
+                            </thead>
                             <tbody id="tablaAuditoria" class="divide-y divide-slate-100 bg-white"></tbody>
                         </table>
                     </div>
@@ -198,15 +230,18 @@
         </main>
     </div>
 
+    <!-- Toast Notifications -->
     <div id="toast" class="fixed top-20 right-4 bg-slate-800 border border-slate-700 text-white px-5 py-4 rounded-xl shadow-2xl font-medium translate-x-[150%] transition-transform duration-300 flex items-center gap-3 z-[110]">
         <i class="ph-fill ph-check-circle text-2xl text-green-400"></i><span id="toastMessage" class="text-sm tracking-wide">Éxito</span>
     </div>
 
+    <!-- SCRIPTS DE FIREBASE Y LÓGICA -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
+        // --- CREDENCIALES NUEVAS DEL PROYECTO DB CarsWash-App-V2 ---
         const firebaseConfig = {
             apiKey: "AIzaSyDU1B4ma3WYmM31CQCNqI-FJCD3oq9vcLo",
             authDomain: "db-carswash-app-v2.firebaseapp.com",
@@ -226,6 +261,7 @@
         let vehiculosEnPista = [];
         let historialLavados = [];
 
+        // Tarifas
         const tarifas = {
             'Auto': { base: 40000, servicios: [{id:'s1', nombre:'Ducha superficial', precio:40000}, {id:'s2', nombre:'Ducha + Aspirado', precio:50000}, {id:'s3', nombre:'Completo', precio:65000}] },
             'Camioneta': { base: 80000, servicios: [{id:'s1', nombre:'Ducha superficial', precio:80000}, {id:'s2', nombre:'Ducha + Aspirado', precio:90000}, {id:'s3', nombre:'Completo', precio:110000}] },
@@ -238,13 +274,10 @@
             { id: 'a3', nombre: 'Renovador plásticos', precio: 10000 }
         ];
 
+        // Autenticación inicial
         const initAuth = async () => {
-            try {
-                await signInAnonymously(auth);
-            } catch (e) {
-                console.error("Error conectando a Firebase Auth:", e);
-                alert("ERROR DE CONEXIÓN CON FIREBASE. Verifica las nuevas credenciales.");
-            }
+            try { await signInAnonymously(auth); } 
+            catch (e) { console.error("Error Auth:", e); alert("Error conectando a la Nube."); }
         };
         initAuth();
 
@@ -257,8 +290,10 @@
         const getHistorialCol = () => collection(db, 'historial_auditoria');
         const getTurnoDoc = () => doc(db, 'sistema_control', 'turno_actual');
 
+        // Escuchadores de Base de Datos en tiempo real
         function iniciarListenersNube() {
             if (!cloudUser) return;
+            
             onSnapshot(getPistaCol(), (snapshot) => {
                 vehiculosEnPista = [];
                 snapshot.forEach(doc => vehiculosEnPista.push({ fbId: doc.id, ...doc.data() }));
@@ -271,27 +306,24 @@
                 if(usuarioActual && usuarioActual.rol === 'admin') renderAuditoria();
             }, (error) => console.error(error));
 
-            // ¡ESTO ES LO QUE ARREGLA EL "CARGANDO NUBE..."!
             onSnapshot(getTurnoDoc(), (docSnap) => {
                 const el = document.getElementById('horaTurnoAuditoria');
                 if (el) {
-                    if (docSnap.exists()) {
-                        el.innerText = docSnap.data().horaInicio || '--:-- hs';
-                    } else {
-                        el.innerText = 'Turno no iniciado';
-                    }
+                    if (docSnap.exists()) { el.innerText = docSnap.data().horaInicio || '--:-- hs'; } 
+                    else { el.innerText = 'Turno no iniciado'; }
                 }
             }, (error) => console.error(error));
         }
 
+        // Reloj Superior
         window.iniciarReloj = function() {
             const display = document.getElementById('relojAppDisplay');
             if(display) display.innerText = new Date().toLocaleTimeString('es-PY', { hour12: false });
         }
-        setInterval(window.iniciarReloj, 1000);
-        window.iniciarReloj();
+        setInterval(window.iniciarReloj, 1000); window.iniciarReloj();
         function formatHora(ts) { return new Date(ts).toLocaleTimeString('es-PY', { hour: '2-digit', minute: '2-digit' }) + ' hs'; }
 
+        // Manejo del Splash Screen y Sesión Guardada
         setTimeout(() => {
             const splash = document.getElementById('splashScreen');
             if(splash) { splash.remove(); window.verificarSesion(); }
@@ -303,26 +335,56 @@
             else { document.getElementById('loginView').classList.remove('hidden'); }
         }
 
+        // --- SISTEMA DE LOGIN MEJORADO (CON SEGURO PARA EL PERSONAL) ---
         window.intentarLogin = async function() {
             if (!cloudUser) {
-                alert("Conectando con la Base de Datos... Espera 2 segundos e intenta de nuevo.");
+                alert("Esperando conexión a la Nube. Intenta de nuevo en un segundo.");
                 return;
             }
             const user = document.getElementById('loginUser').value.toLowerCase().trim();
             const pass = document.getElementById('loginPass').value;
             const err = document.getElementById('loginError');
+            const btnLogin = document.getElementById('btnLogin');
+            
+            // UI de carga
+            const textoOriginal = btnLogin.innerText;
+            btnLogin.innerText = "PROCESANDO...";
+            btnLogin.disabled = true;
 
-            if (user === 'admin' && pass === '123') { usuarioActual = { rol: 'admin', nombre: 'Propietario' }; } 
-            else if (user === 'personal' && pass === '123') {
-                usuarioActual = { rol: 'personal', nombre: 'Operario Pista' };
-                const hora = new Date().toLocaleTimeString('es-PY', { hour: '2-digit', minute:'2-digit' });
-                await setDoc(getTurnoDoc(), { horaInicio: `Hoy a las ${hora} hs` });
-            } else { err.classList.remove('hidden'); return; }
+            try {
+                if (user === 'admin' && pass === '123') { 
+                    usuarioActual = { rol: 'admin', nombre: 'Propietario' }; 
+                } 
+                else if (user === 'personal' && pass === '123') {
+                    usuarioActual = { rol: 'personal', nombre: 'Operario Pista' };
+                    const hora = new Date().toLocaleTimeString('es-PY', { hour: '2-digit', minute:'2-digit' });
+                    
+                    // Intentamos guardar la hora en Firebase, pero si falla, dejamos pasar al usuario igual
+                    try {
+                        await setDoc(getTurnoDoc(), { horaInicio: `Hoy a las ${hora} hs` });
+                    } catch (errorGuardado) {
+                        console.warn("No se pudo guardar la hora del turno, pero se permite el ingreso.", errorGuardado);
+                    }
+                } 
+                else { 
+                    err.classList.remove('hidden'); 
+                    btnLogin.innerText = textoOriginal;
+                    btnLogin.disabled = false;
+                    return; 
+                }
 
-            localStorage.setItem('db_usuario_activo', JSON.stringify(usuarioActual));
-            err.classList.add('hidden');
-            document.getElementById('loginView').classList.add('hidden');
-            iniciarAppUI();
+                // Si llegó aquí, el login es correcto
+                localStorage.setItem('db_usuario_activo', JSON.stringify(usuarioActual));
+                err.classList.add('hidden');
+                document.getElementById('loginView').classList.add('hidden');
+                iniciarAppUI();
+
+            } catch (errorGeneral) {
+                console.error("Error en login", errorGeneral);
+            } finally {
+                btnLogin.innerText = textoOriginal;
+                btnLogin.disabled = false;
+            }
         }
 
         window.cerrarSesion = function() {
@@ -332,6 +394,7 @@
             document.getElementById('loginUser').value = ''; document.getElementById('loginPass').value = '';
         }
 
+        // Inicializar UI General
         function iniciarAppUI() {
             document.getElementById('mainApp').classList.remove('hidden'); document.getElementById('mainApp').classList.add('flex');
             document.getElementById('userNameDisplay').innerText = usuarioActual.nombre;
@@ -340,19 +403,24 @@
             cargarAdicionalesUI(); window.cambiarVista('ingreso');
         }
 
+        // Cambio de Pestañas
         window.cambiarVista = function(vista) {
             const vistas = { 'ingreso': document.getElementById('vistaIngreso'), 'pista': document.getElementById('vistaPista'), 'auditoria': document.getElementById('vistaAuditoria') };
             const tabs = { 'ingreso': document.getElementById('navIngreso'), 'pista': document.getElementById('navPista'), 'auditoria': document.getElementById('navAuditoria') };
             Object.values(vistas).forEach(v => v.classList.add('hidden'));
             Object.values(tabs).forEach(t => { if(t) t.className = t.className.replace('bg-blue-50 text-blue-700 border-blue-200', 'text-slate-500 hover:bg-slate-50 border-transparent'); });
+            
             if(vistas[vista]) vistas[vista].classList.remove('hidden');
             if(tabs[vista]) tabs[vista].className = tabs[vista].className.replace('text-slate-500 hover:bg-slate-50 border-transparent', 'bg-blue-50 text-blue-700 border-blue-200');
+            
             if(vista === 'ingreso') document.getElementById('barraRegistroInferior').classList.remove('translate-y-full');
             else document.getElementById('barraRegistroInferior').classList.add('translate-y-full');
+            
             if(vista === 'pista') renderPista();
             if(vista === 'auditoria' && usuarioActual.rol === 'admin') renderAuditoria();
         }
 
+        // --- LÓGICA DE LAVADO (FOTO, TIPO, PRECIOS) ---
         window.manejarFoto = function(e) {
             const file = e.target.files[0];
             if (file) {
@@ -426,12 +494,12 @@
         }
 
         function validarFormulario() {
-            window.estadoFormulario = estadoFormulario; 
             const chapa = document.getElementById('inputChapa').value.trim();
             document.getElementById('btnRegistrar').disabled = !(estadoFormulario.fotoBase64 && chapa.length >= 3 && estadoFormulario.tipoVehiculo);
         }
         window.validarFormulario = validarFormulario;
 
+        // Registrar a Nube
         window.registrarLavado = async function() {
             if (!cloudUser) return;
             const btn = document.getElementById('btnRegistrar'); const txtBtn = document.getElementById('txtBtnRegistrar');
@@ -443,6 +511,7 @@
             try {
                 await addDoc(getPistaCol(), nuevoVehiculo);
                 mostrarToast("Guardado en la Nube con Éxito");
+                // Reset form
                 estadoFormulario = { fotoBase64: null, chapa: '', tipoVehiculo: null, servicioId: null, adicionales: [], total: 0 };
                 document.getElementById('inputChapa').value = ''; document.getElementById('photoPreview').classList.add('hidden'); document.getElementById('fotoLabelText').classList.remove('hidden');
                 const btns = document.getElementById('tipoVehiculoGroup').children; for(let b of btns) b.classList.remove('selected');
@@ -452,6 +521,7 @@
             } catch (error) { alert("Hubo un error subiendo a la base de datos."); } finally { txtBtn.innerHTML = '<i class="ph-bold ph-cloud-arrow-up text-lg"></i> A NUBE'; }
         }
 
+        // Finalizar Lavado
         let idParaFinalizar = null;
         window.confirmarFinalizar = function(fbId) { idParaFinalizar = fbId; document.getElementById('confirmModal').classList.remove('hidden'); }
         window.cerrarConfirmacion = function() { idParaFinalizar = null; document.getElementById('confirmModal').classList.add('hidden'); }
@@ -463,13 +533,14 @@
                 const vehiculo = vehiculosEnPista.find(v => v.fbId === idParaFinalizar);
                 if(vehiculo) {
                     const vehiculoClon = { ...vehiculo }; delete vehiculoClon.fbId; vehiculoClon.horaFin = Date.now();
-                    await addDoc(getHistorialCol(), vehiculoClon);
-                    const docRef = doc(db, 'pista_activa', idParaFinalizar); await deleteDoc(docRef);
+                    await addDoc(getHistorialCol(), vehiculoClon); // Mover a historial
+                    const docRef = doc(db, 'pista_activa', idParaFinalizar); await deleteDoc(docRef); // Borrar de pista
                     mostrarToast("Lavado Finalizado.");
                 }
-            } catch (error) {} finally { btnConf.disabled = false; document.getElementById('txtBtnConfirmar').innerText = "Sí, Finalizar"; window.cerrarConfirmacion(); }
+            } catch (error) { console.error(error); } finally { btnConf.disabled = false; document.getElementById('txtBtnConfirmar').innerText = "Sí, Finalizar"; window.cerrarConfirmacion(); }
         });
 
+        // Renders visuales (Pista y Auditoría)
         function renderPista() {
             const grid = document.getElementById('gridPista'); const badge = document.getElementById('badgePista'); badge.innerText = vehiculosEnPista.length;
             if(vehiculosEnPista.length === 0) { grid.innerHTML = '<div class="col-span-full py-16 text-center text-slate-400 bg-white rounded-xl border border-slate-200 border-dashed"><i class="ph ph-car-profile text-6xl mb-3 opacity-20 block"></i><p class="font-medium text-lg">Pista Vacía</p></div>'; return; }
@@ -492,6 +563,7 @@
             }); document.getElementById('totalRecaudadoAuditoria').innerText = sumaTotal.toLocaleString('es-PY') + ' Gs';
         }
 
+        // Cronómetros en tiempo real
         function actTiempos() {
             const now = Date.now();
             document.querySelectorAll('.cronometro-auditoria').forEach(d => {
@@ -500,6 +572,7 @@
             });
         } setInterval(actTiempos, 1000);
 
+        // Notificaciones Toast
         let toastTimeout;
         function mostrarToast(msg) { const t = document.getElementById('toast'); document.getElementById('toastMessage').innerText = msg; t.classList.remove('translate-x-[150%]'); if(toastTimeout) clearTimeout(toastTimeout); toastTimeout = setTimeout(() => t.classList.add('translate-x-[150%]'), 3000); }
     </script>
