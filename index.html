@@ -209,7 +209,7 @@
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // TUS CREDENCIALES NUEVAS
+        // CREDENCIALES
         const firebaseConfig = {
             apiKey: "AIzaSyDU1B4ma3WYmM31CQCNqI-FJCD3oq9vcLo",
             authDomain: "db-carswash-app-v2.firebaseapp.com",
@@ -246,7 +246,6 @@
                 await signInAnonymously(auth);
             } catch (e) {
                 console.error("Error Auth:", e);
-                alert("ERROR DE CONEXIÓN FIREBASE. Verifica tu internet o modo incógnito.");
             }
         };
         initAuth();
@@ -305,15 +304,16 @@
             else { document.getElementById('loginView').classList.remove('hidden'); }
         }
 
-        // ====== LOGIN CORREGIDO ======
+        // ==========================================
+        // LOGIN CORREGIDO Y BLINDADO
+        // ==========================================
         window.intentarLogin = async function() {
             const btn = document.getElementById('btnLogin');
-            const textoOriginal = btn.innerText;
             const err = document.getElementById('loginError');
+            const textoOriginal = "INGRESAR AL SISTEMA";
             
             err.classList.add('hidden');
-            btn.innerText = "PROCESANDO...";
-            btn.disabled = true;
+            if(btn) { btn.innerText = "PROCESANDO..."; btn.disabled = true; }
 
             const user = document.getElementById('loginUser').value.toLowerCase().trim();
             const pass = document.getElementById('loginPass').value;
@@ -324,11 +324,13 @@
                 } 
                 else if (user === 'personal' && pass === '123') {
                     usuarioActual = { rol: 'personal', nombre: 'Operario Pista' };
-                    // Intentamos guardar, si falla por reglas, no importa, pasa igual.
+                    // Intentamos guardar, pero si falla NO nos importa, seguimos adelante.
                     try {
                         const hora = new Date().toLocaleTimeString('es-PY', { hour: '2-digit', minute:'2-digit' });
                         await setDoc(getTurnoDoc(), { horaInicio: `Hoy a las ${hora} hs` });
-                    } catch(e) { console.warn("No se pudo guardar la hora, pero se permite ingreso."); }
+                    } catch(e) { 
+                        console.warn("No se pudo guardar la hora en DB, pero se permite el ingreso local."); 
+                    }
                 } else { 
                     err.classList.remove('hidden'); 
                     throw new Error("Credenciales inválidas"); 
@@ -341,8 +343,8 @@
             } catch (error) {
                 console.error(error);
             } finally {
-                btn.innerText = textoOriginal;
-                btn.disabled = false;
+                // ESTO ASEGURA QUE EL BOTÓN SIEMPRE VUELVA A LA NORMALIDAD
+                if(btn) { btn.innerText = textoOriginal; btn.disabled = false; }
             }
         }
 
@@ -453,23 +455,26 @@
         }
         window.validarFormulario = validarFormulario;
 
-        // ====== REGISTRO CORREGIDO ======
+        // ==========================================
+        // REGISTRO CORREGIDO Y BLINDADO
+        // ==========================================
         window.registrarLavado = async function() {
             const btn = document.getElementById('btnRegistrar'); 
             const txtBtn = document.getElementById('txtBtnRegistrar');
             
-            btn.disabled = true; 
-            txtBtn.innerHTML = '<i class="ph-bold ph-spinner animate-spin text-lg"></i> SUBIENDO...';
+            if(btn) btn.disabled = true; 
+            if(txtBtn) txtBtn.innerHTML = '<i class="ph-bold ph-spinner animate-spin text-lg"></i> SUBIENDO...';
             
             estadoFormulario.chapa = document.getElementById('inputChapa').value.trim().toUpperCase();
             const srv = tarifas[estadoFormulario.tipoVehiculo].servicios.find(s=>s.id===estadoFormulario.servicioId);
             const nuevoVehiculo = { chapa: estadoFormulario.chapa, fotoBase64: estadoFormulario.fotoBase64, tipoVehiculo: estadoFormulario.tipoVehiculo, nombreServicio: srv.nombre, total: estadoFormulario.total, horaInicio: Date.now(), operario: usuarioActual.nombre };
 
             try {
+                // Intentamos subir
                 await addDoc(getPistaCol(), nuevoVehiculo);
                 mostrarToast("Guardado en la Nube con Éxito");
                 
-                // Reiniciar formulario
+                // Limpiamos el formulario SI tuvo éxito
                 estadoFormulario = { fotoBase64: null, chapa: '', tipoVehiculo: null, servicioId: null, adicionales: [], total: 0 };
                 document.getElementById('inputChapa').value = ''; 
                 document.getElementById('photoPreview').classList.add('hidden'); 
@@ -485,10 +490,10 @@
                 console.error("Error al registrar:", error);
                 alert("Hubo un pequeño retraso en la red. Intenta registrar de nuevo."); 
             } finally { 
-                // SIEMPRE devuelve el botón a la normalidad
-                txtBtn.innerHTML = '<i class="ph-bold ph-cloud-arrow-up text-lg"></i> A NUBE'; 
-                btn.disabled = false;
-                validarFormulario(); // Re-chequea si debe estar disabled o no
+                // ESTO ASEGURA QUE EL BOTÓN SIEMPRE VUELVA A LA NORMALIDAD
+                if(txtBtn) txtBtn.innerHTML = '<i class="ph-bold ph-cloud-arrow-up text-lg"></i> A NUBE'; 
+                if(btn) btn.disabled = false;
+                validarFormulario(); // Re-chequea si debe estar disabled
             }
         }
 
@@ -499,8 +504,10 @@
         document.getElementById('btnConfirmarAccion').addEventListener('click', async () => {
             if(!idParaFinalizar || !cloudUser) return;
             const btnConf = document.getElementById('btnConfirmarAccion'); 
-            btnConf.disabled = true; 
-            document.getElementById('txtBtnConfirmar').innerText = "Procesando...";
+            const txtBtn = document.getElementById('txtBtnConfirmar');
+            
+            if(btnConf) btnConf.disabled = true; 
+            if(txtBtn) txtBtn.innerText = "Procesando...";
             
             try {
                 const vehiculo = vehiculosEnPista.find(v => v.fbId === idParaFinalizar);
@@ -514,8 +521,8 @@
                 console.error(error);
                 alert("Error al finalizar. Intenta nuevamente.");
             } finally { 
-                btnConf.disabled = false; 
-                document.getElementById('txtBtnConfirmar').innerText = "Sí, Finalizar"; 
+                if(btnConf) btnConf.disabled = false; 
+                if(txtBtn) txtBtn.innerText = "Sí, Finalizar"; 
                 window.cerrarConfirmacion(); 
             }
         });
