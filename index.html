@@ -320,30 +320,21 @@
     <script type="module">
         // IMPORTACIONES DE FIREBASE V11
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // ==========================================
         // CONFIGURACIÓN DE TU BASE DE DATOS (FIREBASE)
         // ==========================================
-        let firebaseConfig;
-        let appId = 'dbcarswash-app'; // ID por defecto
-
-        if (typeof __firebase_config !== 'undefined') {
-            // Entorno de pruebas Canvas (Se configura automático)
-            firebaseConfig = JSON.parse(__firebase_config);
-            appId = typeof __app_id !== 'undefined' ? __app_id : appId;
-        } else {
-            // CONEXIÓN A LA NUBE DE RODRIGO (DB CARSWASH)
-            firebaseConfig = {
-                apiKey: "AIzaSyBPrthgAqvXz7aQtFe34D94XarH_riwhPw",
-                authDomain: "db-carswash---sistema.firebaseapp.com",
-                projectId: "db-carswash---sistema",
-                storageBucket: "db-carswash---sistema.firebasestorage.app",
-                messagingSenderId: "929781228974",
-                appId: "1:929781228974:web:84fa1c8b87d0c4ccce543f"
-            };
-        }
+        // Las llaves reales de Rodrigo para DB CarsWash
+        const firebaseConfig = {
+            apiKey: "AIzaSyBPrthgAqvXz7aQtFe34D94XarH_riwhPw",
+            authDomain: "db-carswash---sistema.firebaseapp.com",
+            projectId: "db-carswash---sistema",
+            storageBucket: "db-carswash---sistema.firebasestorage.app",
+            messagingSenderId: "929781228974",
+            appId: "1:929781228974:web:84fa1c8b87d0c4ccce543f"
+        };
 
         // Inicializar la Nube
         const app = initializeApp(firebaseConfig);
@@ -375,14 +366,10 @@
         // ------------------------------------------
         const initAuth = async () => {
             try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth); // Login anónimo seguro
-                }
+                await signInAnonymously(auth); // Login anónimo seguro
             } catch (e) {
                 console.error("Error conectando a Firebase Auth:", e);
-                alert("Error de conexión a la Base de Datos. Revisa tu Configuración.");
+                alert("Error de conexión a la Base de Datos. Revisa tu internet.");
             }
         };
         initAuth();
@@ -394,10 +381,10 @@
             }
         });
 
-        // RUTAS ESTRICTAS DE ALMACENAMIENTO (Requisito Canvas)
-        const getPistaCol = () => collection(db, 'artifacts', appId, 'public', 'data', 'pista');
-        const getHistorialCol = () => collection(db, 'artifacts', appId, 'public', 'data', 'historial');
-        const getTurnoDoc = () => doc(db, 'artifacts', appId, 'public', 'data', 'sistema', 'turno_actual');
+        // Colecciones en la Nube
+        const getPistaCol = () => collection(db, 'pista_activa');
+        const getHistorialCol = () => collection(db, 'historial_auditoria');
+        const getTurnoDoc = () => doc(db, 'sistema_control', 'turno_actual');
 
         // MAGIA EN TIEMPO REAL: Listeners de Firestore
         function iniciarListenersNube() {
@@ -475,7 +462,7 @@
                 usuarioActual = { rol: 'admin', nombre: 'Propietario' };
             } else if (user === 'personal' && pass === '123') {
                 usuarioActual = { rol: 'personal', nombre: 'Operario Pista' };
-                // GUARDAR EL TURNO EN LA NUBE PARA QUE LO VEA EL ADMIN
+                // GUARDAR EL TURNO EN LA NUBE PARA QUE LO VEA EL ADMIN EN CUALQUIER PC
                 const hora = new Date().toLocaleTimeString('es-PY', { hour: '2-digit', minute:'2-digit' });
                 await setDoc(getTurnoDoc(), { horaInicio: `Hoy a las ${hora} hs` });
             } else {
@@ -718,7 +705,7 @@
                     await addDoc(getHistorialCol(), vehiculoClon);
                     
                     // 3. Borrarlo de la Pista Activa
-                    const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'pista', idParaFinalizar);
+                    const docRef = doc(db, 'pista_activa', idParaFinalizar);
                     await deleteDoc(docRef);
                     
                     mostrarToast("Lavado Finalizado. Ticket sincronizado.");
