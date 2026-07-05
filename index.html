@@ -4,11 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>DB CarsWash - Sistema Comercial en la Nube</title>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Iconos Phosphor -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <!-- Google Fonts: Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f4f7fb; background-image: radial-gradient(#e5e7eb 1px, transparent 1px); background-size: 20px 20px; color: #1e293b; margin: 0; overflow-x: hidden; -webkit-overflow-scrolling: touch; }
@@ -31,7 +28,6 @@
 </head>
 <body class="h-screen flex flex-col">
 
-    <!-- Splash Screen -->
     <div id="splashScreen" class="fixed inset-0 bg-slate-900 z-[100] flex flex-col items-center justify-center smoke-out">
         <div class="flex items-center gap-4 text-white">
             <div class="bg-blue-600 text-white font-bold text-4xl p-4 rounded-lg leading-none">DB</div>
@@ -44,7 +40,6 @@
         </div>
     </div>
 
-    <!-- Pantalla de Login -->
     <div id="loginView" class="fixed inset-0 z-[90] flex items-center justify-center bg-[#f4f7fb] bg-opacity-95 backdrop-blur-sm hidden">
         <div class="glass-panel p-6 md:p-8 w-full max-w-md mx-4 shadow-2xl">
             <div class="text-center mb-8">
@@ -69,7 +64,6 @@
         </div>
     </div>
 
-    <!-- Visor de Foto a Pantalla Completa -->
     <div id="photoModal" class="fixed inset-0 z-[80] bg-slate-900/95 backdrop-blur-sm hidden flex-col items-center justify-center p-4">
         <button onclick="cerrarFotoModal()" class="absolute top-4 right-4 bg-slate-800 hover:bg-red-500 text-white p-3 rounded-full transition-colors"><i class="ph ph-x text-2xl"></i></button>
         <div class="max-w-4xl w-full flex flex-col items-center modal-zoom">
@@ -83,7 +77,6 @@
         </div>
     </div>
 
-    <!-- Modal Confirmación Finalizar Lavado -->
     <div id="confirmModal" class="fixed inset-0 z-[80] bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
         <div class="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl modal-zoom">
             <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4"><i class="ph-fill ph-question"></i></div>
@@ -96,9 +89,7 @@
         </div>
     </div>
 
-    <!-- App Principal -->
     <div id="mainApp" class="hidden flex-col h-full fade-in">
-        <!-- Cabecera Top -->
         <header class="bg-[#1e293b] text-white p-3 md:p-4 flex justify-between items-center shrink-0 z-30 shadow-md">
             <div class="flex items-center gap-3">
                 <div class="bg-blue-600 text-white font-bold text-xl px-2 py-1 rounded shadow">DB</div>
@@ -116,7 +107,6 @@
             </div>
         </header>
 
-        <!-- Barra Navegación -->
         <div class="bg-white border-b border-slate-200 shadow-sm shrink-0">
             <div class="max-w-6xl mx-auto px-2 md:px-6">
                 <div class="flex overflow-x-auto hide-scrollbar gap-1 py-2" id="navTabs">
@@ -127,7 +117,6 @@
             </div>
         </div>
 
-        <!-- VISTA 1: INGRESO -->
         <main id="vistaIngreso" class="flex-1 overflow-y-auto p-4 md:p-6 pb-32">
             <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div class="glass-panel p-6 relative overflow-hidden">
@@ -173,7 +162,6 @@
             </div>
         </div>
 
-        <!-- VISTA 2: PISTA ACTIVA -->
         <main id="vistaPista" class="flex-1 overflow-y-auto p-4 md:p-6 hidden bg-slate-100">
             <div class="max-w-6xl mx-auto">
                 <div class="mb-6 flex items-center justify-between">
@@ -183,7 +171,6 @@
             </div>
         </main>
         
-        <!-- VISTA 3: AUDITORÍA -->
         <main id="vistaAuditoria" class="flex-1 overflow-y-auto p-4 md:p-6 hidden bg-slate-100">
             <div class="max-w-6xl mx-auto">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4">
@@ -215,22 +202,19 @@
         <i class="ph-fill ph-check-circle text-2xl text-green-400"></i><span id="toastMessage" class="text-sm tracking-wide">Éxito</span>
     </div>
 
-    <!-- LÓGICA JAVASCRIPT CON FIREBASE CLOUD -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // ==========================================
-        // NUEVA CONFIGURACIÓN EXACTA DE FIREBASE
-        // ==========================================
+        // CREDENCIALES NUEVAS DEL PROYECTO DB CarsWash-App-V2
         const firebaseConfig = {
-            apiKey: "AIzaSyBPrthgAqvXz7aQtFe34D94XarH_riwhPw", // Se usa la original válida del proyecto
-            authDomain: "db-carswash---sistema.firebaseapp.com",
-            projectId: "db-carswash---sistema",
-            storageBucket: "db-carswash---sistema.firebasestorage.app",
-            messagingSenderId: "929781228974",
-            appId: "1:929781228974:web:c57939afaa749172ce543f" // AppId de la última imagen
+            apiKey: "AIzaSyDU1b4ma3WYmM31CQCNqI-FJCD3oq9vcLo",
+            authDomain: "db-carswash-app-v2.firebaseapp.com",
+            projectId: "db-carswash-app-v2",
+            storageBucket: "db-carswash-app-v2.firebasestorage.app",
+            messagingSenderId: "294782089379",
+            appId: "1:294782089379:web:98f4f7c217bb1315f82716"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -255,17 +239,12 @@
             { id: 'a3', nombre: 'Renovador plásticos', precio: 10000 }
         ];
 
-        // AUTENTICACIÓN FIREBASE CON DETECTOR DE ERRORES REAL
         const initAuth = async () => {
             try {
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
+                await signInAnonymously(auth);
             } catch (e) {
                 console.error("Error conectando a Firebase Auth:", e);
-                alert("ERROR TÉCNICO FIREBASE: \n" + e.code + "\n" + e.message);
+                alert("ERROR DE CONEXIÓN CON FIREBASE. Verifica las nuevas credenciales.");
             }
         };
         initAuth();
@@ -275,7 +254,6 @@
             if (cloudUser) iniciarListenersNube();
         });
 
-        // RUTAS DIRECTAS DE PRODUCCIÓN
         const getPistaCol = () => collection(db, 'pista_activa');
         const getHistorialCol = () => collection(db, 'historial_auditoria');
         const getTurnoDoc = () => doc(db, 'sistema_control', 'turno_actual');
@@ -286,18 +264,18 @@
                 vehiculosEnPista = [];
                 snapshot.forEach(doc => vehiculosEnPista.push({ fbId: doc.id, ...doc.data() }));
                 renderPista();
-            }, (error) => console.error("Error pista:", error));
+            }, (error) => console.error(error));
 
             onSnapshot(getHistorialCol(), (snapshot) => {
                 historialLavados = [];
                 snapshot.forEach(doc => historialLavados.push({ fbId: doc.id, ...doc.data() }));
                 if(usuarioActual && usuarioActual.rol === 'admin') renderAuditoria();
-            }, (error) => console.error("Error auditoria:", error));
+            }, (error) => console.error(error));
 
             onSnapshot(getTurnoDoc(), (docSnap) => {
                 const el = document.getElementById('horaTurnoAuditoria');
                 if (docSnap.exists() && el) el.innerText = docSnap.data().horaInicio || '--:-- hs';
-            }, (error) => console.error("Error turno:", error));
+            }, (error) => console.error(error));
         }
 
         window.iniciarReloj = function() {
@@ -332,7 +310,7 @@
             else if (user === 'personal' && pass === '123') {
                 usuarioActual = { rol: 'personal', nombre: 'Operario Pista' };
                 const hora = new Date().toLocaleTimeString('es-PY', { hour: '2-digit', minute:'2-digit' });
-                try { await setDoc(getTurnoDoc(), { horaInicio: `Hoy a las ${hora} hs` }); } catch(e) { console.error("Fallo al registrar turno", e); }
+                await setDoc(getTurnoDoc(), { horaInicio: `Hoy a las ${hora} hs` });
             } else { err.classList.remove('hidden'); return; }
 
             localStorage.setItem('db_usuario_activo', JSON.stringify(usuarioActual));
@@ -465,7 +443,7 @@
                 document.getElementById('serviciosGroup').innerHTML = '<div class="text-center bg-slate-50 rounded-xl border border-slate-200 text-slate-400 py-10 text-sm font-medium">Seleccione la Clasificación primero</div>';
                 document.querySelectorAll('#adicionalesGroup input').forEach(c=>c.checked=false);
                 calc(); validarFormulario(); window.cambiarVista('pista');
-            } catch (error) { alert("Hubo un error subiendo a la base de datos."); console.error(error); } finally { txtBtn.innerHTML = '<i class="ph-bold ph-cloud-arrow-up text-lg"></i> A NUBE'; }
+            } catch (error) { alert("Hubo un error subiendo a la base de datos."); } finally { txtBtn.innerHTML = '<i class="ph-bold ph-cloud-arrow-up text-lg"></i> A NUBE'; }
         }
 
         let idParaFinalizar = null;
@@ -480,11 +458,10 @@
                 if(vehiculo) {
                     const vehiculoClon = { ...vehiculo }; delete vehiculoClon.fbId; vehiculoClon.horaFin = Date.now();
                     await addDoc(getHistorialCol(), vehiculoClon);
-                    const docRef = doc(db, 'pista_activa', idParaFinalizar); 
-                    await deleteDoc(docRef);
+                    const docRef = doc(db, 'pista_activa', idParaFinalizar); await deleteDoc(docRef);
                     mostrarToast("Lavado Finalizado.");
                 }
-            } catch (error) { console.error(error); } finally { btnConf.disabled = false; document.getElementById('txtBtnConfirmar').innerText = "Sí, Finalizar"; window.cerrarConfirmacion(); }
+            } catch (error) {} finally { btnConf.disabled = false; document.getElementById('txtBtnConfirmar').innerText = "Sí, Finalizar"; window.cerrarConfirmacion(); }
         });
 
         function renderPista() {
