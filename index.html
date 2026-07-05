@@ -304,19 +304,14 @@
             else { document.getElementById('loginView').classList.remove('hidden'); }
         }
 
-        // ==========================================
-        // LOGIN CORREGIDO Y BLINDADO
-        // ==========================================
         window.intentarLogin = async function() {
-            const btn = document.getElementById('btnLogin');
-            const err = document.getElementById('loginError');
-            const textoOriginal = "INGRESAR AL SISTEMA";
-            
-            err.classList.add('hidden');
-            if(btn) { btn.innerText = "PROCESANDO..."; btn.disabled = true; }
-
             const user = document.getElementById('loginUser').value.toLowerCase().trim();
             const pass = document.getElementById('loginPass').value;
+            const err = document.getElementById('loginError');
+            const btn = document.getElementById('btnLogin') || document.querySelector('button[onclick="intentarLogin()"]');
+
+            if (btn) { btn.innerText = "PROCESANDO..."; btn.disabled = true; }
+            err.classList.add('hidden');
 
             try {
                 if (user === 'admin' && pass === '123') { 
@@ -324,27 +319,29 @@
                 } 
                 else if (user === 'personal' && pass === '123') {
                     usuarioActual = { rol: 'personal', nombre: 'Operario Pista' };
-                    // Intentamos guardar, pero si falla NO nos importa, seguimos adelante.
-                    try {
+                    
+                    // LA MAGIA: Guardar la hora en la nube en SEGUNDO PLANO (sin detener la pantalla)
+                    if (cloudUser) {
                         const hora = new Date().toLocaleTimeString('es-PY', { hour: '2-digit', minute:'2-digit' });
-                        await setDoc(getTurnoDoc(), { horaInicio: `Hoy a las ${hora} hs` });
-                    } catch(e) { 
-                        console.warn("No se pudo guardar la hora en DB, pero se permite el ingreso local."); 
+                        setDoc(getTurnoDoc(), { horaInicio: `Hoy a las ${hora} hs` })
+                            .catch(e => console.error("Error silencioso:", e));
                     }
-                } else { 
+                } 
+                else { 
                     err.classList.remove('hidden'); 
-                    throw new Error("Credenciales inválidas"); 
+                    if (btn) { btn.innerText = "INGRESAR AL SISTEMA"; btn.disabled = false; }
+                    return; 
                 }
 
+                // Dejar entrar al usuario al instante
                 localStorage.setItem('db_usuario_activo', JSON.stringify(usuarioActual));
                 document.getElementById('loginView').classList.add('hidden');
+                if (btn) { btn.innerText = "INGRESAR AL SISTEMA"; btn.disabled = false; }
                 iniciarAppUI();
 
             } catch (error) {
-                console.error(error);
-            } finally {
-                // ESTO ASEGURA QUE EL BOTÓN SIEMPRE VUELVA A LA NORMALIDAD
-                if(btn) { btn.innerText = textoOriginal; btn.disabled = false; }
+                err.classList.remove('hidden');
+                if (btn) { btn.innerText = "INGRESAR AL SISTEMA"; btn.disabled = false; }
             }
         }
 
