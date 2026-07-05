@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>DB CarsWash - Sistema</title>
+    <title>DB CarsWash - Sistema Comercial en la Nube</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Iconos Phosphor -->
@@ -22,7 +22,7 @@
             -webkit-overflow-scrolling: touch;
         }
 
-        /* --- STREAMING_CHUNK: Animaciones --- */
+        /* Animaciones */
         .smoke-out {
             animation: smokeDissipate 1.5s forwards ease-in-out;
             animation-delay: 2s;
@@ -33,51 +33,33 @@
             100% { opacity: 0; filter: blur(20px); transform: scale(1.3) translateY(-50px); visibility: hidden; display: none; }
         }
         .fade-in { animation: fadeIn 0.3s ease-in; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .modal-zoom { animation: zoomIn 0.2s ease-out; }
+        @keyframes zoomIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 
-        /* --- STREAMING_CHUNK: Estilos UI --- */
+        /* Estilos UI */
         .glass-panel {
             background: rgba(255, 255, 255, 0.95);
             border: 1px solid rgba(226, 232, 240, 0.8);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
             border-radius: 12px;
         }
-        .input-chapa {
-            font-size: 2rem;
-            font-weight: 800;
-            letter-spacing: 0.1em;
-            text-align: center;
-            text-transform: uppercase;
-        }
-        .selectable-btn {
-            border: 2px solid #e2e8f0;
-            color: #64748b;
-            transition: all 0.2s;
-            cursor: pointer;
-            background: white;
-        }
+        .input-chapa { font-size: 2rem; font-weight: 800; letter-spacing: 0.1em; text-align: center; text-transform: uppercase; }
+        .selectable-btn { border: 2px solid #e2e8f0; color: #64748b; transition: all 0.2s; cursor: pointer; background: white; }
         .selectable-btn:hover { border-color: #94a3b8; }
-        .selectable-btn.selected {
-            border-color: #3b82f6;
-            background-color: #eff6ff;
-            color: #1d4ed8;
-            font-weight: 600;
-        }
+        .selectable-btn.selected { border-color: #3b82f6; background-color: #eff6ff; color: #1d4ed8; font-weight: 600; }
         #cameraInput { display: none; }
-        #btnRegistrar:disabled {
-            background-color: #94a3b8;
-            cursor: not-allowed;
-            transform: none;
-        }
+        #btnRegistrar:disabled { background-color: #94a3b8; cursor: not-allowed; transform: none; }
+        
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="h-screen flex flex-col">
 
-    <!-- --- STREAMING_CHUNK: Splash Screen --- -->
-    <div id="splashScreen" class="fixed inset-0 bg-slate-900 z-50 flex flex-col items-center justify-center smoke-out">
+    <!-- Splash Screen -->
+    <div id="splashScreen" class="fixed inset-0 bg-slate-900 z-[100] flex flex-col items-center justify-center smoke-out">
         <div class="flex items-center gap-4 text-white">
             <div class="bg-blue-600 text-white font-bold text-4xl p-4 rounded-lg leading-none">DB</div>
             <div>
@@ -92,177 +74,235 @@
         </div>
     </div>
 
-    <!-- --- STREAMING_CHUNK: Pantalla de Login --- -->
-    <div id="loginView" class="fixed inset-0 z-40 flex items-center justify-center bg-[#f4f7fb] bg-opacity-95 backdrop-blur-sm hidden">
-        <div class="glass-panel p-6 md:p-8 w-full max-w-md mx-4">
+    <!-- Pantalla de Login -->
+    <div id="loginView" class="fixed inset-0 z-[90] flex items-center justify-center bg-[#f4f7fb] bg-opacity-95 backdrop-blur-sm hidden">
+        <div class="glass-panel p-6 md:p-8 w-full max-w-md mx-4 shadow-2xl">
             <div class="text-center mb-8">
-                <div class="inline-block bg-blue-600 text-white font-bold text-xl p-2 rounded mb-2">DB</div>
+                <div class="inline-block bg-blue-600 text-white font-bold text-xl p-2 rounded mb-2 shadow-lg">DB</div>
                 <h2 class="text-2xl font-bold text-slate-800">Iniciar Sesión</h2>
-                <p class="text-slate-500 text-sm">Ingrese credenciales de acceso</p>
+                <p class="text-slate-500 text-sm">Base de Datos en la Nube Activa</p>
             </div>
             <div class="flex flex-col gap-4">
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-1">Usuario</label>
-                    <input type="text" id="loginUser" class="w-full border border-slate-300 rounded-lg p-3 outline-none focus:border-blue-500" placeholder="admin o personal">
+                    <input type="text" id="loginUser" class="w-full border border-slate-300 rounded-lg p-3 outline-none focus:border-blue-500 transition-colors" placeholder="admin o personal">
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-1">Contraseña</label>
-                    <input type="password" id="loginPass" class="w-full border border-slate-300 rounded-lg p-3 outline-none focus:border-blue-500" placeholder="••••••••">
+                    <input type="password" id="loginPass" class="w-full border border-slate-300 rounded-lg p-3 outline-none focus:border-blue-500 transition-colors" placeholder="••••••••">
                 </div>
-                <button onclick="intentarLogin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg mt-4 transition-colors">
-                    INGRESAR
+                <button onclick="intentarLogin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg mt-4 transition-colors shadow-md">
+                    INGRESAR AL SISTEMA
                 </button>
-                <div id="loginError" class="text-red-500 text-sm text-center hidden mt-2">Credenciales incorrectas.</div>
+                <div id="loginError" class="text-red-500 text-sm text-center hidden mt-2 font-medium bg-red-50 py-2 rounded">Credenciales incorrectas.</div>
             </div>
         </div>
     </div>
 
-    <!-- --- STREAMING_CHUNK: App Principal --- -->
-    <div id="mainApp" class="hidden flex-col h-full fade-in">
-        
-        <!-- Cabecera Rediseñada (100% Responsive) -->
-        <header class="bg-[#2d3748] text-white p-3 md:p-4 flex flex-col md:flex-row justify-between items-center shrink-0 gap-3 z-30 shadow-md">
-            
-            <!-- Logo, Nombre y Reloj -->
-            <div class="flex items-center justify-between w-full md:w-auto">
-                <div class="flex items-center gap-2 md:gap-3">
-                    <div class="bg-blue-600 text-white font-bold text-xl px-2 py-1 rounded">DB</div>
+    <!-- Visor de Foto a Pantalla Completa -->
+    <div id="photoModal" class="fixed inset-0 z-[80] bg-slate-900/95 backdrop-blur-sm hidden flex-col items-center justify-center p-4">
+        <button onclick="cerrarFotoModal()" class="absolute top-4 right-4 bg-slate-800 hover:bg-red-500 text-white p-3 rounded-full transition-colors">
+            <i class="ph ph-x text-2xl"></i>
+        </button>
+        <div class="max-w-4xl w-full flex flex-col items-center modal-zoom">
+            <div class="bg-white p-2 rounded-xl shadow-2xl w-full">
+                <img id="modalImg" class="w-full max-h-[70vh] object-contain rounded-lg bg-slate-100">
+                <div class="flex justify-between items-center p-4">
                     <div>
-                        <p class="text-[10px] text-slate-400 uppercase tracking-wider leading-none">Sistema</p>
-                        <h1 class="text-base md:text-lg font-bold leading-tight">CarsWash</h1>
+                        <h3 class="text-2xl font-black text-slate-800 uppercase tracking-widest" id="modalChapa">CHAPA</h3>
+                        <p class="text-slate-500 font-medium" id="modalDetalle">Detalle</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-xs text-slate-400 font-bold uppercase tracking-wider">Hora de Captura</p>
+                        <p class="text-xl font-bold text-blue-600 font-mono" id="modalHora">00:00 hs</p>
                     </div>
                 </div>
-                <!-- El reloj ahora tiene su ID propio y es inamovible -->
-                <div class="ml-auto md:ml-4 flex items-center gap-1.5 bg-slate-800 border border-slate-600 px-3 py-1.5 rounded-lg shadow-inner">
-                    <i class="ph ph-clock text-blue-400"></i>
-                    <span id="relojAppDisplay" class="font-mono text-sm md:text-base font-bold text-slate-200 tracking-wider">00:00:00</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Confirmación Finalizar Lavado -->
+    <div id="confirmModal" class="fixed inset-0 z-[80] bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl p-6 w-full max-w-sm shadow-2xl modal-zoom">
+            <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-4">
+                <i class="ph-fill ph-question"></i>
+            </div>
+            <h3 class="text-xl font-bold text-center text-slate-800 mb-2">¿Finalizar Lavado?</h3>
+            <p class="text-center text-slate-500 text-sm mb-6">El vehículo será retirado de la pista y enviado al historial de auditoría.</p>
+            <div class="flex gap-3">
+                <button onclick="cerrarConfirmacion()" class="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition-colors">Cancelar</button>
+                <button id="btnConfirmarAccion" class="flex-1 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-md transition-colors flex justify-center items-center gap-2">
+                    <span id="txtBtnConfirmar">Sí, Finalizar</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- App Principal -->
+    <div id="mainApp" class="hidden flex-col h-full fade-in">
+        <!-- Cabecera Top -->
+        <header class="bg-[#1e293b] text-white p-3 md:p-4 flex justify-between items-center shrink-0 z-30 shadow-md">
+            <div class="flex items-center gap-3">
+                <div class="bg-blue-600 text-white font-bold text-xl px-2 py-1 rounded shadow">DB</div>
+                <div class="hidden md:block">
+                    <p class="text-[10px] text-slate-400 uppercase tracking-wider leading-none">Sistema Cloud</p>
+                    <h1 class="text-lg font-bold leading-tight">CarsWash</h1>
                 </div>
             </div>
             
-            <!-- Controles y Usuario -->
-            <div class="flex items-center justify-between md:justify-end w-full md:w-auto gap-3">
-                <span id="userNameDisplay" class="text-sm font-medium text-slate-300 truncate max-w-[120px] md:max-w-none">Hola, Usuario</span>
-                
-                <!-- ESTE CONTENEDOR ES EXCLUSIVO DEL DUEÑO (ADMIN) -->
-                <div id="adminNav" class="hidden flex-1 md:flex-none flex items-center justify-end gap-2">
-                    <button id="navIngreso" onclick="cambiarVista('ingreso')" class="bg-blue-500/20 text-blue-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium flex items-center gap-1 border border-blue-500/30 transition-colors">
-                        <i class="ph ph-plus"></i> Ingreso
-                    </button>
-                    <button id="navAuditoria" onclick="cambiarVista('auditoria')" class="text-slate-400 hover:text-white px-3 py-2 rounded-md text-sm font-medium flex items-center gap-1 transition-colors">
-                        <i class="ph ph-chart-bar"></i> Auditoría
+            <div class="flex items-center gap-4">
+                <div class="flex items-center gap-1.5 bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg shadow-inner">
+                    <i class="ph ph-clock text-blue-400"></i>
+                    <span id="relojAppDisplay" class="font-mono text-sm font-bold text-slate-200 tracking-wider">00:00:00</span>
+                </div>
+                <div class="h-8 w-px bg-slate-700"></div>
+                <div class="flex items-center gap-3">
+                    <div class="text-right hidden sm:block">
+                        <p class="text-xs text-slate-400 leading-none">Sesión activa</p>
+                        <p id="userNameDisplay" class="text-sm font-bold text-slate-200">Usuario</p>
+                    </div>
+                    <button onclick="cerrarSesion()" class="text-slate-400 hover:text-red-400 bg-slate-800 p-2 rounded-md transition-colors border border-slate-700 hover:border-red-400">
+                        <i class="ph ph-sign-out text-xl"></i>
                     </button>
                 </div>
-
-                <!-- Botón de Salir (Visible para todos) -->
-                <button onclick="cerrarSesion()" class="text-slate-400 hover:text-red-400 bg-slate-800 p-2 rounded-md transition-colors border border-slate-700 hover:border-red-400">
-                    <i class="ph ph-sign-out text-xl"></i>
-                </button>
             </div>
         </header>
 
-        <!-- --- STREAMING_CHUNK: Vista de Ingreso --- -->
+        <!-- Barra Navegación -->
+        <div class="bg-white border-b border-slate-200 shadow-sm shrink-0">
+            <div class="max-w-6xl mx-auto px-2 md:px-6">
+                <div class="flex overflow-x-auto hide-scrollbar gap-1 py-2" id="navTabs">
+                    <button id="navIngreso" onclick="cambiarVista('ingreso')" class="whitespace-nowrap px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-all bg-blue-50 text-blue-700 border border-blue-200">
+                        <i class="ph-fill ph-plus-circle text-lg"></i> 1. Nuevo Ingreso
+                    </button>
+                    <button id="navPista" onclick="cambiarVista('pista')" class="whitespace-nowrap px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-all text-slate-500 hover:bg-slate-50 border border-transparent">
+                        <i class="ph-fill ph-garage text-lg"></i> 2. Pista Activa <span id="badgePista" class="bg-slate-200 text-slate-700 text-xs px-2 py-0.5 rounded-full ml-1 animate-pulse">0</span>
+                    </button>
+                    <button id="navAuditoria" onclick="cambiarVista('auditoria')" class="hidden whitespace-nowrap px-4 py-2 rounded-lg text-sm font-bold flex items-center gap-2 transition-all text-slate-500 hover:bg-slate-50 border border-transparent">
+                        <i class="ph-fill ph-chart-bar text-lg"></i> 3. Auditoría en Vivo
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- VISTA 1: INGRESO -->
         <main id="vistaIngreso" class="flex-1 overflow-y-auto p-4 md:p-6 pb-32">
             <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <!-- Columna 1: Vehículo -->
-                <div class="glass-panel p-6">
+                <div class="glass-panel p-6 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-blue-500"></div>
                     <div class="flex items-center gap-2 mb-6">
-                        <div class="w-1 h-5 bg-blue-500 rounded"></div>
+                        <i class="ph-fill ph-car-profile text-2xl text-blue-500"></i>
                         <h2 class="text-lg font-bold text-[#1e293b] uppercase tracking-wide">Datos del Vehículo</h2>
                     </div>
+                    
                     <div class="mb-6">
-                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Evidencia Fotográfica *</label>
-                        <label for="cameraInput" class="w-full h-32 border-2 border-dashed border-slate-300 rounded-xl flex flex-col justify-center items-center gap-2 cursor-pointer bg-slate-50 hover:bg-slate-100 transition-colors relative overflow-hidden group">
-                            <i class="ph ph-camera text-3xl text-slate-400 group-hover:text-blue-500 transition-colors"></i>
-                            <span class="text-sm font-medium text-slate-500" id="fotoLabelText">Tocar para tomar foto</span>
+                        <label class="flex justify-between items-end mb-2">
+                            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Evidencia Fotográfica *</span>
+                            <span class="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded font-bold uppercase">Obligatorio</span>
+                        </label>
+                        <label for="cameraInput" class="w-full h-40 border-2 border-dashed border-blue-300 rounded-xl flex flex-col justify-center items-center gap-2 cursor-pointer bg-blue-50/50 hover:bg-blue-50 transition-colors relative overflow-hidden group">
+                            <i class="ph-fill ph-camera-plus text-4xl text-blue-400 group-hover:scale-110 transition-transform"></i>
+                            <span class="text-sm font-bold text-blue-600" id="fotoLabelText">Tocar para escanear vehículo</span>
                             <img id="photoPreview" class="absolute inset-0 w-full h-full object-cover hidden">
                         </label>
                         <input type="file" id="cameraInput" accept="image/*" capture="environment" onchange="manejarFoto(event)">
                     </div>
+
                     <div class="mb-6">
-                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Número de Chapa</label>
-                        <input type="text" id="inputChapa" class="w-full border-2 border-slate-200 rounded-xl p-3 md:p-4 input-chapa outline-none focus:border-blue-500 uppercase placeholder:text-slate-300" placeholder="Ej. AASD 123" oninput="validarFormulario()">
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Número de Chapa / Patente</label>
+                        <input type="text" id="inputChapa" class="w-full bg-slate-50 border-2 border-slate-200 rounded-xl p-3 md:p-4 input-chapa outline-none focus:border-blue-500 focus:bg-white uppercase placeholder:text-slate-300 transition-colors" placeholder="EJ: AASD 123" oninput="validarFormulario()">
                     </div>
+
                     <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Tipo de Vehículo</label>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Clasificación</label>
                         <div class="grid grid-cols-2 gap-3" id="tipoVehiculoGroup">
-                            <button class="selectable-btn p-3 rounded-lg font-medium" onclick="seleccionarTipoVehiculo(this, 'Auto')">Auto</button>
-                            <button class="selectable-btn p-3 rounded-lg font-medium" onclick="seleccionarTipoVehiculo(this, 'Camioneta')">Camioneta</button>
-                            <button class="selectable-btn p-3 rounded-lg font-medium" onclick="seleccionarTipoVehiculo(this, 'Moto')">Moto</button>
-                            <button class="selectable-btn p-3 rounded-lg font-medium" onclick="seleccionarTipoVehiculo(this, 'Camión')">Camión</button>
+                            <button class="selectable-btn p-3 md:p-4 rounded-xl font-medium shadow-sm" onclick="seleccionarTipoVehiculo(this, 'Auto')"><i class="ph-fill ph-car text-xl mb-1 block mx-auto"></i> Auto</button>
+                            <button class="selectable-btn p-3 md:p-4 rounded-xl font-medium shadow-sm" onclick="seleccionarTipoVehiculo(this, 'Camioneta')"><i class="ph-fill ph-jeep text-xl mb-1 block mx-auto"></i> Camioneta</button>
+                            <button class="selectable-btn p-3 md:p-4 rounded-xl font-medium shadow-sm" onclick="seleccionarTipoVehiculo(this, 'Moto')"><i class="ph-fill ph-motorcycle text-xl mb-1 block mx-auto"></i> Moto</button>
+                            <button class="selectable-btn p-3 md:p-4 rounded-xl font-medium shadow-sm" onclick="seleccionarTipoVehiculo(this, 'Camión')"><i class="ph-fill ph-truck text-xl mb-1 block mx-auto"></i> Camión</button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Columna 2: Servicios -->
-                <div class="glass-panel p-6">
-                    <div class="flex items-center gap-2 mb-6">
-                        <div class="w-1 h-5 bg-blue-500 rounded"></div>
-                        <h2 class="text-lg font-bold text-[#1e293b] uppercase tracking-wide">Servicios</h2>
+                <div class="flex flex-col gap-6">
+                    <div class="glass-panel p-6 flex-1">
+                        <div class="flex items-center gap-2 mb-6">
+                            <i class="ph-fill ph-drop text-2xl text-blue-500"></i>
+                            <h2 class="text-lg font-bold text-[#1e293b] uppercase tracking-wide">Paquete de Lavado</h2>
+                        </div>
+                        <div class="flex flex-col gap-3" id="serviciosGroup">
+                            <div class="text-center bg-slate-50 rounded-xl border border-slate-200 text-slate-400 py-10 text-sm font-medium"><i class="ph ph-arrow-left text-2xl block mb-2 opacity-50"></i>Seleccione la Clasificación del Vehículo primero</div>
+                        </div>
                     </div>
-                    <div class="flex flex-col gap-3" id="serviciosGroup">
-                        <div class="text-center text-slate-400 py-8 text-sm">Seleccione un Tipo de Vehículo primero...</div>
-                    </div>
-                </div>
 
-                <!-- Fila Inferior: Adicionales -->
-                <div class="glass-panel p-6 col-span-1 lg:col-span-2">
-                     <div class="mb-4">
-                        <h2 class="text-sm font-bold text-slate-400 uppercase tracking-wide">Adicionales (Opcional)</h2>
+                    <div class="glass-panel p-6">
+                         <div class="mb-4">
+                            <h2 class="text-sm font-bold text-slate-500 uppercase tracking-wide flex items-center gap-2"><i class="ph-fill ph-sparkle text-blue-500"></i> Adicionales Estéticos</h2>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="adicionalesGroup"></div>
                     </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="adicionalesGroup"></div>
                 </div>
             </div>
         </main>
 
-        <!-- Barra Inferior de Registro -->
-        <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-3 md:p-4 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-20">
+        <div id="barraRegistroInferior" class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-3 md:p-4 shadow-[0_-10px_15px_-3px_rgba(0,0,0,0.05)] z-20 transition-transform duration-300">
             <div class="max-w-6xl mx-auto flex flex-row justify-between items-center gap-4">
                 <div class="text-left flex-1">
-                    <p class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest">Total a Cobrar</p>
-                    <p class="text-xl sm:text-3xl font-extrabold text-[#1e293b]" id="totalDisplay">0 Gs</p>
+                    <p class="text-[10px] sm:text-xs font-bold text-slate-400 uppercase tracking-widest">Total Calculado</p>
+                    <p class="text-2xl sm:text-3xl font-extrabold text-blue-600 tracking-tight" id="totalDisplay">0 Gs</p>
                 </div>
-                <button id="btnRegistrar" onclick="registrarLavado()" class="flex-1 max-w-[200px] bg-[#3b82f6] hover:bg-blue-600 text-white font-bold py-3 md:py-4 px-4 rounded-lg shadow-md transition-all uppercase tracking-wide text-sm md:text-base" disabled>
-                    Registrar
+                <button id="btnRegistrar" onclick="registrarLavado()" class="flex-1 max-w-[220px] bg-blue-600 hover:bg-blue-700 text-white font-black py-4 px-4 rounded-xl shadow-lg transition-all uppercase tracking-widest text-sm flex items-center justify-center gap-2" disabled>
+                    <span id="txtBtnRegistrar"><i class="ph-bold ph-cloud-arrow-up text-lg"></i> ENVIAR A NUBE</span>
                 </button>
             </div>
         </div>
+
+        <!-- VISTA 2: PISTA ACTIVA -->
+        <main id="vistaPista" class="flex-1 overflow-y-auto p-4 md:p-6 hidden bg-slate-100">
+            <div class="max-w-6xl mx-auto">
+                <div class="mb-6 flex items-center justify-between">
+                    <div>
+                        <h2 class="text-xl md:text-2xl font-bold text-slate-800 flex items-center gap-2"><i class="ph-fill ph-garage text-blue-600"></i> Vehículos en Lavado</h2>
+                        <p class="text-sm text-slate-500">Visualice y finalice los servicios en curso (Sincronizado en Vivo).</p>
+                    </div>
+                </div>
+                <div id="gridPista" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            </div>
+        </main>
         
-        <!-- --- STREAMING_CHUNK: Vista de Auditoría --- -->
-        <main id="vistaAuditoria" class="flex-1 overflow-y-auto p-4 md:p-6 hidden bg-[#f4f7fb]">
+        <!-- VISTA 3: AUDITORÍA -->
+        <main id="vistaAuditoria" class="flex-1 overflow-y-auto p-4 md:p-6 hidden bg-slate-100">
             <div class="max-w-6xl mx-auto">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 gap-4">
                     <div>
-                        <h2 class="text-xl md:text-2xl font-bold text-slate-800">Panel de Auditoría</h2>
-                        <p class="text-sm text-slate-500">Control de ingresos DB CarsWash</p>
+                        <h2 class="text-xl md:text-2xl font-bold text-slate-800 flex items-center gap-2"><i class="ph-fill ph-chart-bar text-green-600"></i> Historial y Finanzas</h2>
+                        <p class="text-sm text-slate-500">Reporte de tickets finalizados (Sincronizado en Vivo).</p>
                     </div>
                     <div class="flex gap-2 w-full md:w-auto">
-                        <div class="flex-1 bg-blue-50 p-3 rounded-lg border border-blue-100">
-                            <p class="text-[10px] text-blue-500 uppercase font-bold flex items-center gap-1">
-                                <i class="ph ph-clock"></i> Inicio Personal
-                            </p>
-                            <p class="text-sm font-bold text-blue-700" id="horaTurnoAuditoria">--:--</p>
+                        <div class="flex-1 bg-white p-3 rounded-xl border border-slate-200 shadow-sm relative overflow-hidden">
+                            <p class="text-[10px] text-slate-500 uppercase font-bold flex items-center gap-1"><i class="ph-fill ph-clock text-blue-500"></i> Ingreso Personal</p>
+                            <p class="text-sm font-bold text-slate-800" id="horaTurnoAuditoria">Cargando Nube...</p>
                         </div>
-                        <div class="flex-1 bg-white p-3 rounded-lg border border-slate-200">
-                            <p class="text-[10px] text-slate-500 uppercase font-bold">Total Recaudado</p>
-                            <p class="text-sm font-bold text-green-600" id="totalRecaudadoAuditoria">0 Gs</p>
+                        <div class="flex-1 bg-green-50 p-3 rounded-xl border border-green-200 shadow-sm">
+                            <p class="text-[10px] text-green-600 uppercase font-bold">Total Recaudado Hoy</p>
+                            <p class="text-lg font-black text-green-700 leading-none" id="totalRecaudadoAuditoria">0 Gs</p>
                         </div>
                     </div>
                 </div>
 
                 <div class="glass-panel overflow-hidden border border-slate-200">
                     <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse min-w-[700px]">
+                        <table class="w-full text-left border-collapse min-w-[800px]">
                             <thead>
                                 <tr class="bg-slate-50 border-b border-slate-200">
                                     <th class="p-4 text-xs font-bold text-slate-500 uppercase">Evidencia</th>
                                     <th class="p-4 text-xs font-bold text-slate-500 uppercase">Vehículo</th>
                                     <th class="p-4 text-xs font-bold text-slate-500 uppercase">Detalles</th>
-                                    <th class="p-4 text-xs font-bold text-slate-500 uppercase">Tiempo</th>
-                                    <th class="p-4 text-xs font-bold text-slate-500 uppercase">Total</th>
-                                    <th class="p-4 text-xs font-bold text-slate-500 uppercase">Acción</th>
+                                    <th class="p-4 text-xs font-bold text-slate-500 uppercase">Horarios</th>
+                                    <th class="p-4 text-xs font-bold text-slate-500 uppercase text-right">Cobrado</th>
                                 </tr>
                             </thead>
-                            <tbody id="tablaAuditoria" class="divide-y divide-slate-100"></tbody>
+                            <tbody id="tablaAuditoria" class="divide-y divide-slate-100 bg-white"></tbody>
                         </table>
                     </div>
                 </div>
@@ -271,25 +311,53 @@
     </div>
 
     <!-- Toast Notification -->
-    <div id="toast" class="fixed top-20 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg font-medium translate-x-[150%] transition-transform duration-300 flex items-center gap-2 z-50">
-        <i class="ph-fill ph-check-circle text-xl"></i>
-        <span id="toastMessage">Operación exitosa</span>
+    <div id="toast" class="fixed top-20 right-4 bg-slate-800 border border-slate-700 text-white px-5 py-4 rounded-xl shadow-2xl font-medium translate-x-[150%] transition-transform duration-300 flex items-center gap-3 z-[110]">
+        <i class="ph-fill ph-check-circle text-2xl text-green-400"></i>
+        <span id="toastMessage" class="text-sm tracking-wide">Operación en la Nube exitosa</span>
     </div>
 
-    <!-- --- STREAMING_CHUNK: Lógica JavaScript Corregida --- -->
-    <script>
-        // 1. RELOJ CORREGIDO (Seguro y directo)
-        function iniciarReloj() {
-            const display = document.getElementById('relojAppDisplay');
-            if(display) {
-                const now = new Date();
-                display.innerText = now.toLocaleTimeString('es-PY', { hour12: false });
-            }
-        }
-        setInterval(iniciarReloj, 1000);
-        iniciarReloj(); // Ejecutar al instante
+    <!-- LÓGICA JAVASCRIPT CON FIREBASE CLOUD -->
+    <script type="module">
+        // IMPORTACIONES DE FIREBASE V11
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // 2. DATOS
+        // ==========================================
+        // CONFIGURACIÓN DE TU BASE DE DATOS (FIREBASE)
+        // ==========================================
+        let firebaseConfig;
+        let appId = 'dbcarswash-app'; // ID por defecto
+
+        if (typeof __firebase_config !== 'undefined') {
+            // Entorno de pruebas Canvas (Se configura automático)
+            firebaseConfig = JSON.parse(__firebase_config);
+            appId = typeof __app_id !== 'undefined' ? __app_id : appId;
+        } else {
+            // CONEXIÓN A LA NUBE DE RODRIGO (DB CARSWASH)
+            firebaseConfig = {
+                apiKey: "AIzaSyBPrthgAqvXz7aQtFe34D94XarH_riwhPw",
+                authDomain: "db-carswash---sistema.firebaseapp.com",
+                projectId: "db-carswash---sistema",
+                storageBucket: "db-carswash---sistema.firebasestorage.app",
+                messagingSenderId: "929781228974",
+                appId: "1:929781228974:web:84fa1c8b87d0c4ccce543f"
+            };
+        }
+
+        // Inicializar la Nube
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Variables Globales
+        let cloudUser = null;
+        let usuarioActual = null;
+        let estadoFormulario = { fotoBase64: null, chapa: '', tipoVehiculo: null, servicioId: null, adicionales: [], total: 0 };
+        let vehiculosEnPista = [];
+        let historialLavados = [];
+
+        // Datos del Negocio
         const tarifas = {
             'Auto': { base: 40000, servicios: [{id:'s1', nombre:'Ducha superficial', precio:40000}, {id:'s2', nombre:'Ducha + Aspirado', precio:50000}, {id:'s3', nombre:'Completo', precio:65000}] },
             'Camioneta': { base: 80000, servicios: [{id:'s1', nombre:'Ducha superficial', precio:80000}, {id:'s2', nombre:'Ducha + Aspirado', precio:90000}, {id:'s3', nombre:'Completo', precio:110000}] },
@@ -297,32 +365,108 @@
             'Camión': { base: 150000, servicios: [{id:'s1', nombre:'Básico', precio:150000}, {id:'s2', nombre:'Completo', precio:200000}] }
         };
         const adicionalesLista = [
-            { id: 'a1', nombre: 'Espuma', precio: 5000 },
+            { id: 'a1', nombre: 'Espuma Activa', precio: 5000 },
             { id: 'a2', nombre: 'Cera VONIXX', precio: 20000 },
             { id: 'a3', nombre: 'Renovador plásticos', precio: 10000 }
         ];
 
-        let usuarioActual = null;
-        let estadoFormulario = { fotoBase64: null, chapa: '', tipoVehiculo: null, servicioId: null, adicionales: [], total: 0 };
-        let vehiculosEnPista = [];
+        // ------------------------------------------
+        // AUTENTICACIÓN FIREBASE (SEGURIDAD DE NUBE)
+        // ------------------------------------------
+        const initAuth = async () => {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth); // Login anónimo seguro
+                }
+            } catch (e) {
+                console.error("Error conectando a Firebase Auth:", e);
+                alert("Error de conexión a la Base de Datos. Revisa tu Configuración.");
+            }
+        };
+        initAuth();
 
-        // 3. INICIO
+        onAuthStateChanged(auth, (u) => {
+            cloudUser = u;
+            if (cloudUser) {
+                iniciarListenersNube(); // Cuando conecta, escucha cambios en vivo
+            }
+        });
+
+        // RUTAS ESTRICTAS DE ALMACENAMIENTO (Requisito Canvas)
+        const getPistaCol = () => collection(db, 'artifacts', appId, 'public', 'data', 'pista');
+        const getHistorialCol = () => collection(db, 'artifacts', appId, 'public', 'data', 'historial');
+        const getTurnoDoc = () => doc(db, 'artifacts', appId, 'public', 'data', 'sistema', 'turno_actual');
+
+        // MAGIA EN TIEMPO REAL: Listeners de Firestore
+        function iniciarListenersNube() {
+            if (!cloudUser) return;
+
+            // Escuchar autos en pista
+            onSnapshot(getPistaCol(), (snapshot) => {
+                vehiculosEnPista = [];
+                snapshot.forEach(doc => {
+                    vehiculosEnPista.push({ fbId: doc.id, ...doc.data() });
+                });
+                renderPista();
+            }, (error) => console.error("Error leyendo pista:", error));
+
+            // Escuchar auditoría
+            onSnapshot(getHistorialCol(), (snapshot) => {
+                historialLavados = [];
+                snapshot.forEach(doc => {
+                    historialLavados.push({ fbId: doc.id, ...doc.data() });
+                });
+                if(usuarioActual && usuarioActual.rol === 'admin') renderAuditoria();
+            }, (error) => console.error("Error leyendo historial:", error));
+
+            // Escuchar turno activo
+            onSnapshot(getTurnoDoc(), (docSnap) => {
+                const el = document.getElementById('horaTurnoAuditoria');
+                if (docSnap.exists() && el) {
+                    el.innerText = docSnap.data().horaInicio || '--:-- hs';
+                }
+            }, (error) => console.error("Error leyendo turno:", error));
+        }
+
+        // ==========================================
+        // FUNCIONES DE LA APP Y UI EXPORTADAS A WINDOW
+        // ==========================================
+        
+        // RELOJ
+        window.iniciarReloj = function() {
+            const display = document.getElementById('relojAppDisplay');
+            if(display) {
+                display.innerText = new Date().toLocaleTimeString('es-PY', { hour12: false });
+            }
+        }
+        setInterval(window.iniciarReloj, 1000);
+        window.iniciarReloj();
+        function formatHora(ts) { return new Date(ts).toLocaleTimeString('es-PY', { hour: '2-digit', minute: '2-digit' }) + ' hs'; }
+
+        // SISTEMA DE SESIÓN (LOGIN DEL PERSONAL)
         setTimeout(() => {
             const splash = document.getElementById('splashScreen');
-            if(splash) { splash.remove(); verificarSesion(); }
+            if(splash) { splash.remove(); window.verificarSesion(); }
         }, 2000);
 
-        function verificarSesion() {
+        window.verificarSesion = function() {
             const guardado = localStorage.getItem('db_usuario_activo');
             if (guardado) {
                 usuarioActual = JSON.parse(guardado);
-                iniciarApp();
+                iniciarAppUI();
             } else {
                 document.getElementById('loginView').classList.remove('hidden');
             }
         }
 
-        function intentarLogin() {
+        window.intentarLogin = async function() {
+            if (!cloudUser) {
+                alert("Conectando con la Base de Datos... Espera unos segundos e intenta de nuevo.");
+                return;
+            }
+
             const user = document.getElementById('loginUser').value.toLowerCase().trim();
             const pass = document.getElementById('loginPass').value;
             const err = document.getElementById('loginError');
@@ -330,10 +474,10 @@
             if (user === 'admin' && pass === '123') {
                 usuarioActual = { rol: 'admin', nombre: 'Propietario' };
             } else if (user === 'personal' && pass === '123') {
-                usuarioActual = { rol: 'personal', nombre: 'Operario DB' };
-                // Registramos la hora solo si es el personal
+                usuarioActual = { rol: 'personal', nombre: 'Operario Pista' };
+                // GUARDAR EL TURNO EN LA NUBE PARA QUE LO VEA EL ADMIN
                 const hora = new Date().toLocaleTimeString('es-PY', { hour: '2-digit', minute:'2-digit' });
-                localStorage.setItem('db_turno_inicio', `Hoy a las ${hora}`);
+                await setDoc(getTurnoDoc(), { horaInicio: `Hoy a las ${hora} hs` });
             } else {
                 err.classList.remove('hidden');
                 return;
@@ -342,36 +486,10 @@
             localStorage.setItem('db_usuario_activo', JSON.stringify(usuarioActual));
             err.classList.add('hidden');
             document.getElementById('loginView').classList.add('hidden');
-            iniciarApp();
+            iniciarAppUI();
         }
 
-        function iniciarApp() {
-            document.getElementById('mainApp').classList.remove('hidden');
-            document.getElementById('mainApp').classList.add('flex');
-            document.getElementById('userNameDisplay').innerText = `Hola, ${usuarioActual.nombre}`;
-            
-            const adminNav = document.getElementById('adminNav');
-            
-            // LÓGICA ESTRICTA DE VISTAS POR ROL
-            if (usuarioActual.rol === 'admin') {
-                // El Admin ve los botones de navegar y puede ir a Auditoria
-                adminNav.classList.remove('hidden');
-                
-                const horaTurno = localStorage.getItem('db_turno_inicio');
-                const auditoriaEl = document.getElementById('horaTurnoAuditoria');
-                if(auditoriaEl) auditoriaEl.innerText = horaTurno ? horaTurno : 'Sin iniciar';
-            } else {
-                // El Personal NO ve botones de navegación, solo carga
-                adminNav.classList.add('hidden');
-            }
-            
-            // Todos inician en "Ingreso" visualmente
-            cambiarVista('ingreso');
-            cargarAdicionalesUI();
-            cargarBD();
-        }
-
-        function cerrarSesion() {
+        window.cerrarSesion = function() {
             usuarioActual = null;
             localStorage.removeItem('db_usuario_activo');
             document.getElementById('mainApp').classList.add('hidden');
@@ -381,62 +499,88 @@
             document.getElementById('loginPass').value = '';
         }
 
-        function cambiarVista(vista) {
-            const vIngreso = document.getElementById('vistaIngreso');
-            const vAuditoria = document.getElementById('vistaAuditoria');
-            const btnIng = document.getElementById('navIngreso');
-            const btnAud = document.getElementById('navAuditoria');
-            const barraAbajo = document.querySelector('.fixed.bottom-0');
-
-            if(vista === 'ingreso') {
-                vIngreso.classList.remove('hidden');
-                vAuditoria.classList.add('hidden');
-                if(btnIng) btnIng.classList.add('bg-blue-500/20', 'text-blue-300');
-                if(btnAud) btnAud.classList.remove('bg-blue-500/20', 'text-blue-300');
-                if(barraAbajo) barraAbajo.classList.remove('hidden');
-            } else if (vista === 'auditoria' && usuarioActual.rol === 'admin') {
-                vIngreso.classList.add('hidden');
-                vAuditoria.classList.remove('hidden');
-                if(btnAud) btnAud.classList.add('bg-blue-500/20', 'text-blue-300');
-                if(btnIng) btnIng.classList.remove('bg-blue-500/20', 'text-blue-300');
-                if(barraAbajo) barraAbajo.classList.add('hidden');
-                
-                // CORRECCIÓN: Forzamos que se cargue la hora del personal siempre que entres a Auditoría
-                const horaTurno = localStorage.getItem('db_turno_inicio');
-                const auditoriaEl = document.getElementById('horaTurnoAuditoria');
-                if(auditoriaEl) auditoriaEl.innerText = horaTurno ? horaTurno : 'Sin iniciar';
-                
-                renderAuditoria();
-            }
+        function iniciarAppUI() {
+            document.getElementById('mainApp').classList.remove('hidden');
+            document.getElementById('mainApp').classList.add('flex');
+            document.getElementById('userNameDisplay').innerText = usuarioActual.nombre;
+            
+            const tabAuditoria = document.getElementById('navAuditoria');
+            if (usuarioActual.rol === 'admin') tabAuditoria.classList.remove('hidden');
+            else tabAuditoria.classList.add('hidden');
+            
+            cargarAdicionalesUI();
+            window.cambiarVista('ingreso');
         }
 
-        // 4. LÓGICA DE LAVADOS
-        function manejarFoto(e) {
+        window.cambiarVista = function(vista) {
+            const vistas = { 'ingreso': document.getElementById('vistaIngreso'), 'pista': document.getElementById('vistaPista'), 'auditoria': document.getElementById('vistaAuditoria') };
+            const tabs = { 'ingreso': document.getElementById('navIngreso'), 'pista': document.getElementById('navPista'), 'auditoria': document.getElementById('navAuditoria') };
+            
+            Object.values(vistas).forEach(v => v.classList.add('hidden'));
+            Object.values(tabs).forEach(t => { if(t) t.className = t.className.replace('bg-blue-50 text-blue-700 border-blue-200', 'text-slate-500 hover:bg-slate-50 border-transparent'); });
+
+            if(vistas[vista]) vistas[vista].classList.remove('hidden');
+            if(tabs[vista]) tabs[vista].className = tabs[vista].className.replace('text-slate-500 hover:bg-slate-50 border-transparent', 'bg-blue-50 text-blue-700 border-blue-200');
+
+            if(vista === 'ingreso') document.getElementById('barraRegistroInferior').classList.remove('translate-y-full');
+            else document.getElementById('barraRegistroInferior').classList.add('translate-y-full');
+
+            if(vista === 'pista') renderPista();
+            if(vista === 'auditoria' && usuarioActual.rol === 'admin') renderAuditoria();
+        }
+
+        // MOTOR FOTOGRÁFICO Y VISOR (LIGHTBOX)
+        window.manejarFoto = function(e) {
             const file = e.target.files[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = (ev) => {
-                    estadoFormulario.fotoBase64 = ev.target.result;
-                    document.getElementById('photoPreview').src = ev.target.result;
-                    document.getElementById('photoPreview').classList.remove('hidden');
-                    document.getElementById('fotoLabelText').classList.add('hidden');
-                    validarFormulario();
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        let width = img.width, height = img.height;
+                        if (width > height) { if (width > 800) { height *= 800 / width; width = 800; } } 
+                        else { if (height > 800) { width *= 800 / height; height = 800; } }
+
+                        canvas.width = width; canvas.height = height;
+                        ctx.drawImage(img, 0, 0, width, height);
+                        const compressedData = canvas.toDataURL('image/jpeg', 0.6); // Comprimimos más para Firestore
+                        
+                        estadoFormulario.fotoBase64 = compressedData;
+                        document.getElementById('photoPreview').src = compressedData;
+                        document.getElementById('photoPreview').classList.remove('hidden');
+                        document.getElementById('fotoLabelText').classList.add('hidden');
+                        validarFormulario();
+                    }
+                    img.src = ev.target.result;
                 }
                 reader.readAsDataURL(file);
             }
         }
 
-        function seleccionarTipoVehiculo(btn, tipo) {
+        window.abrirFotoModal = function(fotoBase64, chapa, detalle, hora) {
+            document.getElementById('modalImg').src = fotoBase64;
+            document.getElementById('modalChapa').innerText = chapa;
+            document.getElementById('modalDetalle').innerText = detalle;
+            document.getElementById('modalHora').innerText = formatHora(parseInt(hora));
+            document.getElementById('photoModal').classList.remove('hidden');
+            document.getElementById('photoModal').classList.add('flex');
+        }
+
+        window.cerrarFotoModal = function() {
+            document.getElementById('photoModal').classList.add('hidden');
+            document.getElementById('photoModal').classList.remove('flex');
+        }
+
+        // FORMULARIO DE INGRESO
+        window.seleccionarTipoVehiculo = function(btn, tipo) {
             const botones = document.getElementById('tipoVehiculoGroup').children;
             for(let b of botones) b.classList.remove('selected');
             btn.classList.add('selected');
             estadoFormulario.tipoVehiculo = tipo;
             
-            // CORRECCIÓN: Seleccionamos el primer servicio por defecto SOLO al cambiar de vehículo (Auto a Camioneta)
-            if(tarifas[tipo].servicios.length > 0) {
-                estadoFormulario.servicioId = tarifas[tipo].servicios[0].id;
-            }
-            
+            if(tarifas[tipo].servicios.length > 0) estadoFormulario.servicioId = tarifas[tipo].servicios[0].id;
             cargarServiciosUI(tipo);
             validarFormulario();
         }
@@ -444,16 +588,16 @@
         function cargarServiciosUI(tipo) {
             const cont = document.getElementById('serviciosGroup');
             cont.innerHTML = '';
-            
-            // CORRECCIÓN: Eliminamos el reseteo automático que bloqueaba el cambio de precios
             tarifas[tipo].servicios.forEach((srv) => {
                 const isSel = estadoFormulario.servicioId === srv.id;
-                const cls = isSel ? 'border-blue-500 bg-blue-50 text-blue-900' : 'border-slate-200 bg-white';
+                const cls = isSel ? 'border-blue-500 bg-blue-50 text-blue-900 shadow-md transform scale-[1.01]' : 'border-slate-200 bg-white hover:border-blue-300';
                 
                 const div = document.createElement('div');
-                div.className = `border-2 rounded-xl p-4 cursor-pointer flex justify-between ${cls}`;
+                div.className = `border-2 rounded-xl p-4 cursor-pointer flex justify-between items-center transition-all ${cls}`;
                 div.onclick = () => { estadoFormulario.servicioId = srv.id; cargarServiciosUI(tipo); };
-                div.innerHTML = `<span class="font-medium">${srv.nombre}</span><span class="font-bold">${srv.precio.toLocaleString('es-PY')} Gs</span>`;
+                
+                const icon = isSel ? `<i class="ph-fill ph-check-circle text-blue-500 text-xl"></i>` : `<div class="w-5 h-5 rounded-full border-2 border-slate-300"></div>`;
+                div.innerHTML = `<div class="flex items-center gap-3">${icon} <span class="font-bold">${srv.nombre}</span></div><span class="font-black text-lg">${srv.precio.toLocaleString('es-PY')} Gs</span>`;
                 cont.appendChild(div);
             });
             calc();
@@ -464,13 +608,13 @@
             cont.innerHTML = '';
             adicionalesLista.forEach(ad => {
                 const div = document.createElement('label');
-                div.className = "flex items-center justify-between p-3 border border-slate-200 rounded-lg cursor-pointer bg-white";
-                div.innerHTML = `<div class="flex items-center gap-2"><input type="checkbox" onchange="tglAd('${ad.id}', this)"> <span class="text-sm">${ad.nombre}</span></div><span class="text-xs font-bold text-slate-400">+${ad.precio/1000}mil</span>`;
+                div.className = "flex items-center justify-between p-4 border-2 border-slate-100 rounded-xl cursor-pointer bg-white hover:bg-slate-50 transition-colors";
+                div.innerHTML = `<div class="flex items-center gap-3"><input type="checkbox" class="w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500" onchange="window.tglAd('${ad.id}', this)"> <span class="text-sm font-semibold text-slate-700">${ad.nombre}</span></div><span class="text-xs font-black bg-slate-100 text-slate-600 px-2 py-1 rounded">+${ad.precio/1000}mil</span>`;
                 cont.appendChild(div);
             });
         }
 
-        function tglAd(id, cb) {
+        window.tglAd = function(id, cb) {
             if(cb.checked) estadoFormulario.adicionales.push(id);
             else estadoFormulario.adicionales = estadoFormulario.adicionales.filter(a => a !== id);
             calc();
@@ -479,24 +623,37 @@
         function calc() {
             let t = 0;
             if(estadoFormulario.tipoVehiculo && estadoFormulario.servicioId) {
-                t += tarifas[estadoFormulario.tipoVehiculo].servicios.find(s=>s.id===estadoFormulario.servicioId).precio;
+                const srv = tarifas[estadoFormulario.tipoVehiculo].servicios.find(s=>s.id===estadoFormulario.servicioId);
+                if(srv) t += srv.precio;
             }
-            estadoFormulario.adicionales.forEach(aid => { t += adicionalesLista.find(a=>a.id===aid).precio; });
+            estadoFormulario.adicionales.forEach(aid => { 
+                const ad = adicionalesLista.find(a=>a.id===aid);
+                if(ad) t += ad.precio; 
+            });
             estadoFormulario.total = t;
             document.getElementById('totalDisplay').innerText = t.toLocaleString('es-PY') + ' Gs';
         }
 
         function validarFormulario() {
+            window.estadoFormulario = estadoFormulario; // sync
             const chapa = document.getElementById('inputChapa').value.trim();
             document.getElementById('btnRegistrar').disabled = !(estadoFormulario.fotoBase64 && chapa.length >= 3 && estadoFormulario.tipoVehiculo);
         }
+        window.validarFormulario = validarFormulario;
 
-        function registrarLavado() {
+        // GUARDADO EN FIRESTORE (LA NUBE)
+        window.registrarLavado = async function() {
+            if (!cloudUser) return;
+            
+            const btn = document.getElementById('btnRegistrar');
+            const txtBtn = document.getElementById('txtBtnRegistrar');
+            btn.disabled = true;
+            txtBtn.innerHTML = '<i class="ph-bold ph-spinner animate-spin text-lg"></i> SUBIENDO...';
+
             estadoFormulario.chapa = document.getElementById('inputChapa').value.trim().toUpperCase();
             const srv = tarifas[estadoFormulario.tipoVehiculo].servicios.find(s=>s.id===estadoFormulario.servicioId);
             
-            vehiculosEnPista.push({
-                id: Date.now(),
+            const nuevoVehiculo = {
                 chapa: estadoFormulario.chapa,
                 fotoBase64: estadoFormulario.fotoBase64,
                 tipoVehiculo: estadoFormulario.tipoVehiculo,
@@ -504,97 +661,155 @@
                 total: estadoFormulario.total,
                 horaInicio: Date.now(),
                 operario: usuarioActual.nombre
-            });
-            guardarBD();
-            mostrarToast("Ticket Registrado: " + estadoFormulario.chapa);
-            
-            // Reset UI
-            estadoFormulario = { fotoBase64: null, chapa: '', tipoVehiculo: null, servicioId: null, adicionales: [], total: 0 };
-            document.getElementById('inputChapa').value = '';
-            document.getElementById('photoPreview').classList.add('hidden');
-            document.getElementById('fotoLabelText').classList.remove('hidden');
-            const btns = document.getElementById('tipoVehiculoGroup').children;
-            for(let b of btns) b.classList.remove('selected');
-            document.getElementById('serviciosGroup').innerHTML = '<div class="text-center text-slate-400 py-8 text-sm">Seleccione un Tipo...</div>';
-            document.querySelectorAll('#adicionalesGroup input').forEach(c=>c.checked=false);
-            calc(); validarFormulario();
-        }
+            };
 
-        // 5. BASE DE DATOS Y AUDITORÍA
-        function guardarBD() {
-            localStorage.setItem('db_vehiculos_pista', JSON.stringify(vehiculosEnPista));
-            if(usuarioActual && usuarioActual.rol === 'admin') renderAuditoria();
-        }
-
-        function cargarBD() {
-            const data = localStorage.getItem('db_vehiculos_pista');
-            if (data) vehiculosEnPista = JSON.parse(data);
-            if(usuarioActual && usuarioActual.rol === 'admin') renderAuditoria();
-        }
-
-        window.addEventListener('storage', (e) => {
-            if (e.key === 'db_vehiculos_pista') {
-                vehiculosEnPista = JSON.parse(e.newValue || '[]');
-                if(usuarioActual && usuarioActual.rol === 'admin') renderAuditoria();
+            try {
+                // Guarda directo en la base de datos de Google
+                await addDoc(getPistaCol(), nuevoVehiculo);
+                mostrarToast("Guardado en la Nube con Éxito");
+                
+                // Reset form
+                estadoFormulario = { fotoBase64: null, chapa: '', tipoVehiculo: null, servicioId: null, adicionales: [], total: 0 };
+                document.getElementById('inputChapa').value = '';
+                document.getElementById('photoPreview').classList.add('hidden');
+                document.getElementById('fotoLabelText').classList.remove('hidden');
+                const btns = document.getElementById('tipoVehiculoGroup').children;
+                for(let b of btns) b.classList.remove('selected');
+                document.getElementById('serviciosGroup').innerHTML = '<div class="text-center bg-slate-50 rounded-xl border border-slate-200 text-slate-400 py-10 text-sm font-medium">Seleccione la Clasificación del Vehículo primero</div>';
+                document.querySelectorAll('#adicionalesGroup input').forEach(c=>c.checked=false);
+                calc(); validarFormulario();
+                
+                window.cambiarVista('pista');
+            } catch (error) {
+                console.error("Error al subir:", error);
+                alert("Hubo un error subiendo a la base de datos.");
+            } finally {
+                txtBtn.innerHTML = '<i class="ph-bold ph-cloud-arrow-up text-lg"></i> ENVIAR A NUBE';
             }
-            if (e.key === 'db_turno_inicio') {
-                const el = document.getElementById('horaTurnoAuditoria');
-                if (el) el.innerText = e.newValue || '--:--';
+        }
+
+        // MOVER DE PISTA A HISTORIAL EN LA NUBE
+        let idParaFinalizar = null;
+        window.confirmarFinalizar = function(fbId) {
+            idParaFinalizar = fbId;
+            document.getElementById('confirmModal').classList.remove('hidden');
+        }
+        window.cerrarConfirmacion = function() {
+            idParaFinalizar = null;
+            document.getElementById('confirmModal').classList.add('hidden');
+        }
+
+        document.getElementById('btnConfirmarAccion').addEventListener('click', async () => {
+            if(!idParaFinalizar || !cloudUser) return;
+            
+            const btnConf = document.getElementById('btnConfirmarAccion');
+            btnConf.disabled = true;
+            document.getElementById('txtBtnConfirmar').innerText = "Procesando...";
+
+            try {
+                // 1. Encontrar el vehículo
+                const vehiculo = vehiculosEnPista.find(v => v.fbId === idParaFinalizar);
+                if(vehiculo) {
+                    const vehiculoClon = { ...vehiculo };
+                    delete vehiculoClon.fbId; // Quitamos el ID local antes de guardar
+                    vehiculoClon.horaFin = Date.now();
+                    
+                    // 2. Guardarlo en la colección Historial
+                    await addDoc(getHistorialCol(), vehiculoClon);
+                    
+                    // 3. Borrarlo de la Pista Activa
+                    const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'pista', idParaFinalizar);
+                    await deleteDoc(docRef);
+                    
+                    mostrarToast("Lavado Finalizado. Ticket sincronizado.");
+                }
+            } catch (error) {
+                console.error("Error al finalizar:", error);
+            } finally {
+                btnConf.disabled = false;
+                document.getElementById('txtBtnConfirmar').innerText = "Sí, Finalizar";
+                window.cerrarConfirmacion();
             }
         });
 
+        // RENDER UI BASADO EN FIRESTORE
+        function renderPista() {
+            const grid = document.getElementById('gridPista');
+            const badge = document.getElementById('badgePista');
+            badge.innerText = vehiculosEnPista.length;
+            
+            if(vehiculosEnPista.length === 0) {
+                grid.innerHTML = '<div class="col-span-full py-16 text-center text-slate-400 bg-white rounded-xl border border-slate-200 border-dashed"><i class="ph ph-car-profile text-6xl mb-3 opacity-20 block"></i><p class="font-medium text-lg">Pista Vacía</p><p class="text-sm">Todo sincronizado con la nube.</p></div>';
+                return;
+            }
+
+            grid.innerHTML = '';
+            vehiculosEnPista.forEach(v => {
+                const card = document.createElement('div');
+                card.className = "bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden flex flex-col hover:shadow-md transition-shadow relative group";
+                card.innerHTML = `
+                    <div class="h-1 w-full bg-blue-500"></div>
+                    <div class="p-5 flex-1">
+                        <div class="flex justify-between items-start mb-4">
+                            <div onclick="abrirFotoModal('${v.fotoBase64}', '${v.chapa}', '${v.tipoVehiculo} - ${v.nombreServicio}', '${v.horaInicio}')" class="w-20 h-16 bg-slate-100 rounded-lg overflow-hidden cursor-pointer relative shadow-sm border border-slate-200 group-hover:border-blue-400 transition-colors">
+                                <img src="${v.fotoBase64}" class="w-full h-full object-cover">
+                            </div>
+                            <div class="text-right">
+                                <p class="text-[10px] uppercase font-bold text-slate-400">Hora Ingreso</p>
+                                <p class="text-sm font-bold text-slate-800 bg-slate-100 px-2 py-1 rounded inline-block mt-1">${formatHora(v.horaInicio)}</p>
+                            </div>
+                        </div>
+                        <h3 class="text-2xl font-black text-slate-800 tracking-wider mb-1">${v.chapa}</h3>
+                        <p class="text-sm font-bold text-blue-600 mb-4">${v.tipoVehiculo} <span class="text-slate-400 font-normal">| ${v.nombreServicio}</span></p>
+                        <div class="bg-slate-50 rounded-xl p-3 flex justify-between items-center border border-slate-100">
+                            <div>
+                                <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Cronómetro</p>
+                                <p class="font-mono font-bold text-slate-700 text-xl cronometro-auditoria" data-start="${v.horaInicio}">00:00</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-lg font-black text-slate-800">${v.total.toLocaleString('es-PY')} Gs</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-slate-50 border-t border-slate-100">
+                        <button onclick="confirmarFinalizar('${v.fbId}')" class="w-full bg-slate-200 hover:bg-green-500 hover:text-white hover:shadow-lg text-slate-700 font-bold py-3 rounded-xl transition-all flex justify-center items-center gap-2">
+                            <i class="ph-bold ph-check-circle text-xl"></i> FINALIZAR LAVADO
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            actTiempos();
+        }
+
         function renderAuditoria() {
             const tbody = document.getElementById('tablaAuditoria');
-            tbody.innerHTML = '';
-            let suma = 0;
+            let sumaTotal = 0;
 
-            if(vehiculosEnPista.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-slate-400">Pista vacía.</td></tr>';
+            if(historialLavados.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="p-12 text-center text-slate-400"><i class="ph ph-receipt text-5xl mb-2 opacity-30 block"></i> Base de datos en cero hoy.</td></tr>';
                 document.getElementById('totalRecaudadoAuditoria').innerText = '0 Gs';
                 return;
             }
 
-            vehiculosEnPista.forEach(v => {
-                suma += v.total;
+            tbody.innerHTML = '';
+            const historialOrdenado = [...historialLavados].sort((a,b) => b.horaFin - a.horaFin);
+
+            historialOrdenado.forEach(v => {
+                sumaTotal += v.total;
+                const minTardados = Math.floor((v.horaFin - v.horaInicio) / 60000);
                 const tr = document.createElement('tr');
                 tr.className = 'hover:bg-slate-50 transition-colors';
                 tr.innerHTML = `
-                    <td class="p-4">
-                        <div class="w-16 h-12 rounded bg-slate-200 overflow-hidden relative group cursor-pointer border border-slate-300">
-                            <img src="${v.fotoBase64}" class="w-full h-full object-cover">
-                            <div class="hidden md:group-hover:block absolute top-0 left-full ml-2 w-48 h-32 z-50 rounded shadow-2xl border border-slate-300 bg-white">
-                                 <img src="${v.fotoBase64}" class="w-full h-full object-cover rounded">
-                            </div>
-                        </div>
-                    </td>
-                    <td class="p-4">
-                        <p class="font-mono font-bold text-slate-700 text-lg">${v.chapa}</p>
-                        <p class="text-[10px] text-slate-400">Op: ${v.operario}</p>
-                    </td>
-                    <td class="p-4">
-                        <p class="font-bold text-sm text-slate-800">${v.tipoVehiculo}</p>
-                        <p class="text-xs text-slate-500">${v.nombreServicio}</p>
-                    </td>
-                    <td class="p-4 font-mono font-medium text-blue-600 cronometro-auditoria" data-start="${v.horaInicio}">00:00:00</td>
-                    <td class="p-4 font-bold text-slate-800">${v.total.toLocaleString('es-PY')} Gs</td>
-                    <td class="p-4">
-                        <button onclick="finalizarLavado(${v.id})" class="text-xs font-bold bg-slate-100 hover:bg-green-100 text-slate-600 hover:text-green-700 border border-slate-300 px-3 py-1.5 rounded transition-colors whitespace-nowrap">
-                            <i class="ph ph-check"></i> Finalizar
-                        </button>
-                    </td>
+                    <td class="p-4"><div onclick="abrirFotoModal('${v.fotoBase64}', '${v.chapa}', 'Finalizado', '${v.horaInicio}')" class="w-16 h-12 rounded bg-slate-200 overflow-hidden cursor-pointer border border-slate-300 relative group"><img src="${v.fotoBase64}" class="w-full h-full object-cover"></div></td>
+                    <td class="p-4"><p class="font-mono font-black text-slate-800 text-lg">${v.chapa}</p><p class="text-[10px] text-slate-500 uppercase font-semibold">Op: ${v.operario}</p></td>
+                    <td class="p-4"><p class="font-bold text-sm text-slate-800">${v.tipoVehiculo}</p><p class="text-xs text-slate-500 truncate max-w-[200px]">${v.nombreServicio}</p></td>
+                    <td class="p-4"><div class="flex flex-col"><span class="text-xs font-semibold text-slate-600"><span class="text-green-600">IN:</span> ${formatHora(v.horaInicio).replace(' hs','')}</span><span class="text-xs font-semibold text-slate-600"><span class="text-red-600">OUT:</span> ${formatHora(v.horaFin).replace(' hs','')}</span><span class="text-[10px] text-slate-400 mt-1">Duración: ${minTardados} min</span></div></td>
+                    <td class="p-4 text-right"><p class="font-black text-slate-800 bg-green-50 text-green-700 px-3 py-1 rounded inline-block border border-green-100">${v.total.toLocaleString('es-PY')} Gs</p></td>
                 `;
                 tbody.appendChild(tr);
             });
-            document.getElementById('totalRecaudadoAuditoria').innerText = suma.toLocaleString('es-PY') + ' Gs';
-            actTiempos();
-        }
-
-        function finalizarLavado(id) {
-            if(confirm("¿Liberar vehículo?")) {
-                vehiculosEnPista = vehiculosEnPista.filter(v => v.id !== id);
-                guardarBD();
-                mostrarToast("Vehículo finalizado");
-            }
+            document.getElementById('totalRecaudadoAuditoria').innerText = sumaTotal.toLocaleString('es-PY') + ' Gs';
         }
 
         function actTiempos() {
@@ -605,16 +820,18 @@
                 const m = Math.floor((diff % 3600000) / 60000);
                 const sec = Math.floor((diff % 60000) / 1000);
                 d.innerText = `${m.toString().padStart(2,'0')}:${sec.toString().padStart(2,'0')}`;
-                if(m > 45) { d.classList.replace('text-blue-600','text-red-600'); d.classList.add('font-extrabold'); }
+                if(m >= 45) d.classList.replace('text-slate-700','text-red-600');
             });
         }
         setInterval(actTiempos, 1000);
 
+        let toastTimeout;
         function mostrarToast(msg) {
             const t = document.getElementById('toast');
             document.getElementById('toastMessage').innerText = msg;
             t.classList.remove('translate-x-[150%]');
-            setTimeout(() => t.classList.add('translate-x-[150%]'), 3000);
+            if(toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => t.classList.add('translate-x-[150%]'), 3000);
         }
     </script>
 </body>
