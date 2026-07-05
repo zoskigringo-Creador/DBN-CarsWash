@@ -324,9 +324,8 @@
         import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
         // ==========================================
-        // CONFIGURACIÓN DE TU BASE DE DATOS (FIREBASE)
+        // CONFIGURACIÓN EXACTA DE TU BASE DE DATOS
         // ==========================================
-        // Las llaves reales de Rodrigo para DB CarsWash
         const firebaseConfig = {
             apiKey: "AIzaSyBPrthgAqvXz7aQtFe34D94XarH_riwhPw",
             authDomain: "db-carswash---sistema.firebaseapp.com",
@@ -369,7 +368,7 @@
                 await signInAnonymously(auth); // Login anónimo seguro
             } catch (e) {
                 console.error("Error conectando a Firebase Auth:", e);
-                alert("Error de conexión a la Base de Datos. Revisa tu internet.");
+                alert("Error de seguridad: Firebase bloqueó tu dominio. Por favor autoriza tu enlace de GitHub en Authentication > Configuración > Dominios autorizados.");
             }
         };
         initAuth();
@@ -381,7 +380,7 @@
             }
         });
 
-        // Colecciones en la Nube
+        // Colecciones de Base de Datos
         const getPistaCol = () => collection(db, 'pista_activa');
         const getHistorialCol = () => collection(db, 'historial_auditoria');
         const getTurnoDoc = () => doc(db, 'sistema_control', 'turno_actual');
@@ -450,7 +449,7 @@
 
         window.intentarLogin = async function() {
             if (!cloudUser) {
-                alert("Conectando con la Base de Datos... Espera unos segundos e intenta de nuevo.");
+                alert("Conectando con la Base de Datos... Espera unos segundos e intenta de nuevo. Asegúrate de haber autorizado el dominio en Firebase.");
                 return;
             }
 
@@ -462,7 +461,7 @@
                 usuarioActual = { rol: 'admin', nombre: 'Propietario' };
             } else if (user === 'personal' && pass === '123') {
                 usuarioActual = { rol: 'personal', nombre: 'Operario Pista' };
-                // GUARDAR EL TURNO EN LA NUBE PARA QUE LO VEA EL ADMIN EN CUALQUIER PC
+                // GUARDAR EL TURNO EN LA NUBE PARA QUE LO VEA EL ADMIN
                 const hora = new Date().toLocaleTimeString('es-PY', { hour: '2-digit', minute:'2-digit' });
                 await setDoc(getTurnoDoc(), { horaInicio: `Hoy a las ${hora} hs` });
             } else {
