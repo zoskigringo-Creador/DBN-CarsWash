@@ -239,6 +239,11 @@
             };
         }
 
+        // LIMPIEZA DE LLAVE DE SEGURIDAD (Elimina espacios accidentales al copiar/pegar)
+        if (firebaseConfig.apiKey) {
+            firebaseConfig.apiKey = firebaseConfig.apiKey.trim();
+        }
+
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
