@@ -207,7 +207,6 @@
         import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // CREDENCIALES NUEVAS DEL PROYECTO DB CarsWash-App-V2
         const firebaseConfig = {
             apiKey: "AIzaSyDU1B4ma3WYmM31CQCNqI-FJCD3oq9vcLo",
             authDomain: "db-carswash-app-v2.firebaseapp.com",
@@ -272,9 +271,16 @@
                 if(usuarioActual && usuarioActual.rol === 'admin') renderAuditoria();
             }, (error) => console.error(error));
 
+            // ¡ESTO ES LO QUE ARREGLA EL "CARGANDO NUBE..."!
             onSnapshot(getTurnoDoc(), (docSnap) => {
                 const el = document.getElementById('horaTurnoAuditoria');
-                if (docSnap.exists() && el) el.innerText = docSnap.data().horaInicio || '--:-- hs';
+                if (el) {
+                    if (docSnap.exists()) {
+                        el.innerText = docSnap.data().horaInicio || '--:-- hs';
+                    } else {
+                        el.innerText = 'Turno no iniciado';
+                    }
+                }
             }, (error) => console.error(error));
         }
 
