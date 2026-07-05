@@ -221,28 +221,17 @@
         import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, deleteDoc, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // CONFIGURACIÓN DUAL: Soporta GitHub Pages y Entorno de Pruebas
-        let firebaseConfig;
-        let appId = 'dbcarswash-app';
-
-        if (typeof __firebase_config !== 'undefined') {
-            firebaseConfig = JSON.parse(__firebase_config);
-            appId = typeof __app_id !== 'undefined' ? __app_id : appId;
-        } else {
-            firebaseConfig = {
-                apiKey: "AIzaSyBPrthgAqvXz7aQtFe34D94XarH_riwhPw",
-                authDomain: "db-carswash---sistema.firebaseapp.com",
-                projectId: "db-carswash---sistema",
-                storageBucket: "db-carswash---sistema.firebasestorage.app",
-                messagingSenderId: "929781228974",
-                appId: "1:929781228974:web:84fa1c8b87d0c4ccce543f"
-            };
-        }
-
-        // LIMPIEZA DE LLAVE DE SEGURIDAD (Elimina espacios accidentales al copiar/pegar)
-        if (firebaseConfig.apiKey) {
-            firebaseConfig.apiKey = firebaseConfig.apiKey.trim();
-        }
+        // ==========================================
+        // NUEVA CONFIGURACIÓN EXACTA DE FIREBASE
+        // ==========================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyBPrthgAqvXz7aQtFe34D94XarH_riwhPw", // Se usa la original válida del proyecto
+            authDomain: "db-carswash---sistema.firebaseapp.com",
+            projectId: "db-carswash---sistema",
+            storageBucket: "db-carswash---sistema.firebasestorage.app",
+            messagingSenderId: "929781228974",
+            appId: "1:929781228974:web:c57939afaa749172ce543f" // AppId de la última imagen
+        };
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
@@ -276,7 +265,7 @@
                 }
             } catch (e) {
                 console.error("Error conectando a Firebase Auth:", e);
-                alert("ERROR TÉCNICO FIREBASE: \n" + e.message + "\n\n(Rodrigo, envíale una captura de este cartel a Gemini)");
+                alert("ERROR TÉCNICO FIREBASE: \n" + e.code + "\n" + e.message);
             }
         };
         initAuth();
@@ -286,10 +275,10 @@
             if (cloudUser) iniciarListenersNube();
         });
 
-        // RUTAS CORRECTAS ESTRICTAS
-        const getPistaCol = () => collection(db, 'artifacts', appId, 'public', 'data', 'pista_activa');
-        const getHistorialCol = () => collection(db, 'artifacts', appId, 'public', 'data', 'historial_auditoria');
-        const getTurnoDoc = () => doc(db, 'artifacts', appId, 'public', 'data', 'sistema_control', 'turno_actual');
+        // RUTAS DIRECTAS DE PRODUCCIÓN
+        const getPistaCol = () => collection(db, 'pista_activa');
+        const getHistorialCol = () => collection(db, 'historial_auditoria');
+        const getTurnoDoc = () => doc(db, 'sistema_control', 'turno_actual');
 
         function iniciarListenersNube() {
             if (!cloudUser) return;
@@ -297,18 +286,18 @@
                 vehiculosEnPista = [];
                 snapshot.forEach(doc => vehiculosEnPista.push({ fbId: doc.id, ...doc.data() }));
                 renderPista();
-            }, (error) => console.error(error));
+            }, (error) => console.error("Error pista:", error));
 
             onSnapshot(getHistorialCol(), (snapshot) => {
                 historialLavados = [];
                 snapshot.forEach(doc => historialLavados.push({ fbId: doc.id, ...doc.data() }));
                 if(usuarioActual && usuarioActual.rol === 'admin') renderAuditoria();
-            }, (error) => console.error(error));
+            }, (error) => console.error("Error auditoria:", error));
 
             onSnapshot(getTurnoDoc(), (docSnap) => {
                 const el = document.getElementById('horaTurnoAuditoria');
                 if (docSnap.exists() && el) el.innerText = docSnap.data().horaInicio || '--:-- hs';
-            }, (error) => console.error(error));
+            }, (error) => console.error("Error turno:", error));
         }
 
         window.iniciarReloj = function() {
@@ -343,7 +332,7 @@
             else if (user === 'personal' && pass === '123') {
                 usuarioActual = { rol: 'personal', nombre: 'Operario Pista' };
                 const hora = new Date().toLocaleTimeString('es-PY', { hour: '2-digit', minute:'2-digit' });
-                await setDoc(getTurnoDoc(), { horaInicio: `Hoy a las ${hora} hs` });
+                try { await setDoc(getTurnoDoc(), { horaInicio: `Hoy a las ${hora} hs` }); } catch(e) { console.error("Fallo al registrar turno", e); }
             } else { err.classList.remove('hidden'); return; }
 
             localStorage.setItem('db_usuario_activo', JSON.stringify(usuarioActual));
@@ -476,7 +465,7 @@
                 document.getElementById('serviciosGroup').innerHTML = '<div class="text-center bg-slate-50 rounded-xl border border-slate-200 text-slate-400 py-10 text-sm font-medium">Seleccione la Clasificación primero</div>';
                 document.querySelectorAll('#adicionalesGroup input').forEach(c=>c.checked=false);
                 calc(); validarFormulario(); window.cambiarVista('pista');
-            } catch (error) { alert("Hubo un error subiendo a la base de datos."); } finally { txtBtn.innerHTML = '<i class="ph-bold ph-cloud-arrow-up text-lg"></i> A NUBE'; }
+            } catch (error) { alert("Hubo un error subiendo a la base de datos."); console.error(error); } finally { txtBtn.innerHTML = '<i class="ph-bold ph-cloud-arrow-up text-lg"></i> A NUBE'; }
         }
 
         let idParaFinalizar = null;
@@ -491,11 +480,11 @@
                 if(vehiculo) {
                     const vehiculoClon = { ...vehiculo }; delete vehiculoClon.fbId; vehiculoClon.horaFin = Date.now();
                     await addDoc(getHistorialCol(), vehiculoClon);
-                    const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'pista_activa', idParaFinalizar); 
+                    const docRef = doc(db, 'pista_activa', idParaFinalizar); 
                     await deleteDoc(docRef);
                     mostrarToast("Lavado Finalizado.");
                 }
-            } catch (error) {} finally { btnConf.disabled = false; document.getElementById('txtBtnConfirmar').innerText = "Sí, Finalizar"; window.cerrarConfirmacion(); }
+            } catch (error) { console.error(error); } finally { btnConf.disabled = false; document.getElementById('txtBtnConfirmar').innerText = "Sí, Finalizar"; window.cerrarConfirmacion(); }
         });
 
         function renderPista() {
